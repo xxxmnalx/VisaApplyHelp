@@ -1,0 +1,14 @@
+{
+  "CA": [
+    { "code": "visitor", "name": "访客签证 (Visitor Visa / TRV)" },
+    { "code": "transit", "name": "过境签证 (Transit Visa)" }
+  ],
+  "JP": [
+    { "code": "tourist", "name": "短期观光签证" },
+    { "code": "transit", "name": "过境签证" }
+  ],
+  "KR": [
+    { "code": "c34", "name": "C-3-4 短期商务/访问" },
+    { "code": "transit", "name": "K-ETA / 过境免签" }
+  ]
+}

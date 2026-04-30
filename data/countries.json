@@ -1,0 +1,20 @@
+[
+  {
+    "code": "CA",
+    "name": "加拿大",
+    "flag": "🇨🇦",
+    "embassyUrl": "https://www.canadainternational.gc.ca/"
+  },
+  {
+    "code": "JP",
+    "name": "日本",
+    "flag": "🇯🇵",
+    "embassyUrl": "https://www.us.emb-japan.go.jp/"
+  },
+  {
+    "code": "KR",
+    "name": "韩国",
+    "flag": "🇰🇷",
+    "embassyUrl": "https://overseas.mofa.go.kr/us-en/index.do"
+  }
+]
