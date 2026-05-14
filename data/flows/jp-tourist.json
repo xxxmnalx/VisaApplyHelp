@@ -1,0 +1,129 @@
+{
+  "id": "jp-tourist",
+  "country": "JP",
+  "name": "日本短期观光签证",
+  "summary": "在美申请赴日短期观光（最长 90 天单次入境）签证。持中国护照需通过日本驻美使领馆指定代办点提交申请。",
+  "supportedStatus": ["H1B", "PR"],
+  "officialFee": "单次 $30 / 多次 $60（实际由代办点收取并附服务费）",
+  "processingDays": "代办点收到材料后约 5–7 个工作日",
+  "lastUpdated": "2026-05-14",
+  "materials": [
+    {
+      "id": "passport",
+      "name": "中国护照（原件）",
+      "note": "有效期需 ≥ 拟入境日 + 6 个月，至少 2 页空白签证页",
+      "forStatus": "*"
+    },
+    {
+      "id": "i94",
+      "name": "I-94 入境记录打印件",
+      "link": "https://i94.cbp.dhs.gov/",
+      "note": "登录 CBP 官网获取最新一次入境记录，打印出来",
+      "forStatus": "*"
+    },
+    {
+      "id": "i797",
+      "name": "I-797 批准书复印件",
+      "note": "H-1B 主申请人需要，证明在美合法身份",
+      "forStatus": ["H1B"]
+    },
+    {
+      "id": "green-card",
+      "name": "绿卡正反面复印件",
+      "note": "永久居民身份证明",
+      "forStatus": ["PR"]
+    },
+    {
+      "id": "visa-app",
+      "name": "签证申请表",
+      "link": "https://www.mofa.go.jp/mofaj/files/000124525.pdf",
+      "note": "日本外务省官方表格，需打印手填或电子填写后打印签字",
+      "forStatus": "*"
+    },
+    {
+      "id": "photo",
+      "name": "2 张 45mm × 45mm 白底彩照",
+      "note": "6 个月内拍摄，背面用铅笔写姓名",
+      "forStatus": "*"
+    },
+    {
+      "id": "itinerary",
+      "name": "行程表（含每日大致安排）",
+      "note": "可手写或表格，列出入境/离境日期、城市、住宿",
+      "forStatus": "*"
+    },
+    {
+      "id": "flight",
+      "name": "往返机票订单",
+      "note": "已出票或可退订的预订单都可以",
+      "forStatus": "*"
+    },
+    {
+      "id": "hotel",
+      "name": "全程酒店预订单",
+      "note": "Booking / Agoda 等可免费取消的预订即可",
+      "forStatus": "*"
+    },
+    {
+      "id": "bank",
+      "name": "近 3 个月银行流水或工资单",
+      "note": "证明经济能力，金额无硬性要求但建议覆盖行程花销",
+      "forStatus": "*"
+    },
+    {
+      "id": "employment",
+      "name": "在职 / 在学证明",
+      "note": "H-1B 出具公司在职证明；绿卡持有者可用工资单 / 自雇文件代替",
+      "forStatus": "*"
+    }
+  ],
+  "steps": [
+    {
+      "id": "check",
+      "title": "确认你属于本流程",
+      "body": "本流程适用于：持中国护照、目前在美国境内、身份为 H-1B 或绿卡，希望短期赴日观光（≤ 90 天）。如果你已经持有 10 年多次往返日签，直接订票即可，不需走本流程。",
+      "links": [
+        { "label": "日本驻美大使馆签证页", "url": "https://www.us.emb-japan.go.jp/itpr_en/travel_and_visa.html" }
+      ]
+    },
+    {
+      "id": "locate-consulate",
+      "title": "确认你的领区",
+      "body": "日本在美设有大使馆（华盛顿）和多个领事馆，按你的居住州划分领区。必须向你所在领区的代办点提交申请，跨领区会被拒收。",
+      "links": [
+        { "label": "查找你所属领区", "url": "https://www.us.emb-japan.go.jp/itpr_en/jurisdiction.html" }
+      ]
+    },
+    {
+      "id": "gather",
+      "title": "准备所有材料",
+      "linkMaterials": true
+    },
+    {
+      "id": "fill-form",
+      "title": "填写签证申请表",
+      "body": "下载 PDF 申请表，电子填写后打印签字，或全程手填。注意中文姓名用拼音、地址使用美国当前居住地。",
+      "links": [
+        { "label": "下载签证申请表 PDF", "url": "https://www.mofa.go.jp/mofaj/files/000124525.pdf" }
+      ]
+    },
+    {
+      "id": "submit",
+      "title": "邮寄或现场递交至代办点",
+      "body": "日本驻美使领馆不直接受理中国护照短期签证，需通过指定代办点（如 JVAC、Travisa）提交。代办点会收取手续费。建议邮寄前再核对一遍材料清单。",
+      "links": [
+        { "label": "指定代办点列表", "url": "https://www.us.emb-japan.go.jp/itpr_en/travel_and_visa.html" }
+      ]
+    },
+    {
+      "id": "track",
+      "title": "等待审理并跟踪进度",
+      "body": "代办点收到材料后会进入领馆审理，正常 5–7 个工作日。出签后会通过邮寄或自取归还护照。"
+    },
+    {
+      "id": "pickup",
+      "title": "取回护照并核对签证页",
+      "body": "拿到护照后立刻核对签证页：英文姓名、护照号、签证有效期、停留天数、单次/多次。任何错误立刻联系代办点更正。"
+    }
+  ]
+}
