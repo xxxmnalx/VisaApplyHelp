@@ -224,6 +224,7 @@ export const caTrvF1Flow: FlowConfig = {
       title: "了解完整流程",
       summary: "先看清申请、指纹、审理和贴签全周期，避免只规划 IRCC 审理时间。",
       officialLinkIds: ["apply", "processing-times"],
+      showSummaryPanel: true,
       tasks: [
         {
           id: "understand-online",
