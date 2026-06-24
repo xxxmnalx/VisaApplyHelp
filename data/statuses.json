@@ -1,8 +1,14 @@
 [
-  { "code": "F1", "name": "F-1 学生签证", "note": "在读学生身份" },
-  { "code": "OPT", "name": "OPT 实习期", "note": "F-1 毕业后的工作授权" },
-  { "code": "H1B", "name": "H-1B 工作签证", "note": "雇主担保工作签证" },
-  { "code": "H4", "name": "H-4 家属签证", "note": "H 类主申请人的配偶/子女" },
-  { "code": "J1", "name": "J-1 交流访问学者", "note": "可能受两年回国服务条款约束" },
-  { "code": "PR", "name": "绿卡 / 永久居民", "note": "美国合法永久居民" }
+  { "code": "F1", "name": "F-1 在读学生", "note": "0.1 版本已支持" },
+  { "code": "F2", "name": "F-2 学生家属", "note": "后续版本" },
+  { "code": "OPT", "name": "OPT / STEM OPT", "note": "后续版本" },
+  { "code": "H1B", "name": "H-1B 工作身份", "note": "后续版本" },
+  { "code": "H4", "name": "H-4 家属身份", "note": "后续版本" },
+  { "code": "J1", "name": "J-1 交流访问身份", "note": "后续版本" },
+  { "code": "J2", "name": "J-2 家属身份", "note": "后续版本" },
+  { "code": "M1", "name": "M-1 职业学生", "note": "后续版本" },
+  { "code": "M2", "name": "M-2 家属身份", "note": "后续版本" },
+  { "code": "L1", "name": "L-1 跨国公司调动身份", "note": "后续版本" },
+  { "code": "L2", "name": "L-2 家属身份", "note": "后续版本" },
+  { "code": "B1B2", "name": "B-1/B-2 短期访客", "note": "需要按情况判断，暂未开放" }
 ]

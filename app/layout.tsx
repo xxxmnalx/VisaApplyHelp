@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -14,9 +16,21 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "在美华人第三国签证攻略",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://visa-apply-help.vercel.app",
+  ),
+  title: {
+    default: "在美华人第三国签证步骤助手",
+    template: "%s｜签证步骤助手",
+  },
   description:
-    "面向在美中国护照持有者（F1/OPT/H1B/H4/J1/绿卡）的加拿大、日本、韩国等第三国签证结构化攻略。",
+    "面向在美中国护照持有者的第三国签证逐步申请助手。0.1 版本支持 F-1 学生申请加拿大访客签证。",
+  openGraph: {
+    type: "website",
+    locale: "zh_CN",
+    title: "在美华人第三国签证步骤助手",
+    description: "通过身份配置、Checklist 和官方入口，逐步完成第三国签证申请。",
+  },
 };
 
 export const viewport: Viewport = {
@@ -32,9 +46,13 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
       >
-        {children}
+        <div className="flex min-h-screen flex-col">
+          <SiteHeader />
+          <div className="flex-1">{children}</div>
+          <SiteFooter />
+        </div>
       </body>
     </html>
   );
