@@ -20,6 +20,9 @@ export function IdentitySelector({ flow }: IdentitySelectorProps) {
   const selectedChoice = flow.eligibilityChoices.find(
     (choice) => choice.id === selectedStatus,
   );
+  const officialVisitorVisaSource =
+    flow.sources.find((source) => source.id === "visitor-overview") ??
+    flow.sources.find((source) => source.id === "apply");
   const canContinue =
     Boolean(selectedChoice?.supported) &&
     hasChinesePassport &&
@@ -110,9 +113,22 @@ export function IdentitySelector({ flow }: IdentitySelectorProps) {
       </fieldset>
 
       {selectedChoice && !selectedChoice.supported ? (
-        <p className="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
-          该身份尚未开放。我们保留了配置扩展能力，但不会让你误用 F-1 流程。
-        </p>
+        <div className="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
+          <p>
+            该身份尚未开放。我们保留了配置扩展能力，但不会让你误用 F-1 流程。
+          </p>
+          {officialVisitorVisaSource ? (
+            <a
+              href={officialVisitorVisaSource.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex min-h-[44px] items-center font-medium text-amber-900 underline underline-offset-2 hover:text-amber-950"
+            >
+              前往加拿大官方访客签证页面（{officialVisitorVisaSource.organization}）↗
+              <span className="sr-only">（在新标签页打开）</span>
+            </a>
+          ) : null}
+        </div>
       ) : null}
 
       <button
