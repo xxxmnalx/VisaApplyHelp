@@ -3,32 +3,48 @@ import { notFound } from "next/navigation";
 import { FlowRunner } from "@/components/FlowRunner";
 import {
   getAdjacentSteps,
-  getDefaultFlow,
+  getFlowByRoute,
+  getFlowStaticParams,
   getFlowStep,
   getStepSources,
 } from "@/lib/flows";
 
 type FlowStepPageProps = {
-  params: { step: string };
+  params: {
+    country: string;
+    visaType: string;
+    status: string;
+    step: string;
+  };
 };
 
 export function generateStaticParams() {
-  return getDefaultFlow().steps.map((step) => ({ step: step.slug }));
+  return getFlowStaticParams();
 }
 
 export function generateMetadata({ params }: FlowStepPageProps): Metadata {
-  const flow = getDefaultFlow();
-  const step = getFlowStep(flow, params.step);
-  if (!step) return {};
+  const flow = getFlowByRoute(
+    params.country,
+    params.visaType,
+    params.status,
+  );
+  const step = flow ? getFlowStep(flow, params.step) : null;
+  if (!flow || !step) return {};
 
   return {
-    title: `${step.title}｜加拿大 F-1 访客签证`,
+    title: `${step.title}｜${flow.countryName} ${flow.statusLabel} ${flow.visaType}`,
     description: step.summary,
   };
 }
 
 export default function FlowStepPage({ params }: FlowStepPageProps) {
-  const flow = getDefaultFlow();
+  const flow = getFlowByRoute(
+    params.country,
+    params.visaType,
+    params.status,
+  );
+  if (!flow) notFound();
+
   const step = getFlowStep(flow, params.step);
   if (!step) notFound();
 

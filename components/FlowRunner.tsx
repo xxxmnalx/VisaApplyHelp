@@ -1,18 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChecklistItemCard } from "@/components/ChecklistItemCard";
 import { FlowProgress } from "@/components/FlowProgress";
 import { OfficialLinkCard } from "@/components/OfficialLinkCard";
+import { useFlowProgress } from "@/hooks/useFlowProgress";
+import {
+  calculateCompletionPercentage,
+  countMissingRequiredTasks,
+} from "@/lib/domain/progress";
 import type {
   FlowConfig,
-  FlowProgressState,
   FlowStep,
   OfficialSource,
-  TaskState,
 } from "@/lib/flow-types";
+import { getStepPath } from "@/lib/flows";
 
 type FlowRunnerProps = {
   flow: FlowConfig;
@@ -22,17 +26,6 @@ type FlowRunnerProps = {
   nextSlug: string | null;
 };
 
-function createEmptyProgress(flow: FlowConfig): FlowProgressState {
-  return {
-    flowId: flow.id,
-    version: flow.version,
-    selectedStatus: flow.status,
-    taskStates: {},
-    timelineDates: {},
-    updatedAt: new Date().toISOString(),
-  };
-}
-
 export function FlowRunner({
   flow,
   step,
@@ -41,90 +34,34 @@ export function FlowRunner({
   nextSlug,
 }: FlowRunnerProps) {
   const router = useRouter();
-  const storageKey = `visa-flow:${flow.id}:progress`;
-  const [progress, setProgress] = useState<FlowProgressState>(() =>
-    createEmptyProgress(flow),
-  );
-  const [isLoaded, setIsLoaded] = useState(false);
+  const {
+    isLoaded,
+    isIdentityValid,
+    progress,
+    updateTask,
+    updateTimelineDate,
+    resetProgress,
+  } = useFlowProgress(flow, step.id);
 
   useEffect(() => {
-    const identity = window.localStorage.getItem(`visa-flow:${flow.id}:identity`);
-    if (!identity) {
-      router.replace("/start");
-      return;
-    }
+    if (isLoaded && !isIdentityValid) router.replace("/start");
+  }, [isIdentityValid, isLoaded, router]);
 
-    try {
-      const parsed = JSON.parse(identity) as { selectedStatus?: string };
-      if (parsed.selectedStatus !== flow.status) {
-        router.replace("/start");
-        return;
-      }
-    } catch {
-      window.localStorage.removeItem(`visa-flow:${flow.id}:identity`);
-      router.replace("/start");
-      return;
-    }
-
-    const saved = window.localStorage.getItem(storageKey);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved) as FlowProgressState;
-        if (parsed.flowId === flow.id && parsed.version === flow.version) {
-          setProgress(parsed);
-        }
-      } catch {
-        window.localStorage.removeItem(storageKey);
-      }
-    }
-    setIsLoaded(true);
-  }, [flow.id, flow.status, flow.version, router, storageKey]);
-
-  useEffect(() => {
-    if (!isLoaded) return;
-    window.localStorage.setItem(storageKey, JSON.stringify(progress));
-  }, [isLoaded, progress, storageKey]);
-
-  const totalTasks = useMemo(
-    () => flow.steps.reduce((total, current) => total + current.tasks.length, 0),
-    [flow.steps],
-  );
-  const completedTasks = Object.values(progress.taskStates).filter(
-    (state) => state === "completed",
-  ).length;
-  const completionPercentage =
-    totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+  const completionPercentage = calculateCompletionPercentage(flow, progress);
   const currentIndex = flow.steps.findIndex((candidate) => candidate.id === step.id);
-  const missingRequired = step.tasks.filter(
-    (task) =>
-      task.kind === "required" &&
-      progress.taskStates[`${step.id}:${task.id}`] !== "completed",
-  ).length;
+  const missingRequired = countMissingRequiredTasks(step, progress);
 
-  function updateTask(taskId: string, state: TaskState | null) {
-    const key = `${step.id}:${taskId}`;
-    setProgress((current) => {
-      const taskStates = { ...current.taskStates };
-      if (state) taskStates[key] = state;
-      else delete taskStates[key];
-      return { ...current, taskStates, updatedAt: new Date().toISOString() };
-    });
-  }
-
-  function updateTimelineDate(eventId: string, date: string) {
-    setProgress((current) => {
-      const timelineDates = { ...current.timelineDates };
-      if (date) timelineDates[eventId] = date;
-      else delete timelineDates[eventId];
-      return { ...current, timelineDates, updatedAt: new Date().toISOString() };
-    });
-  }
-
-  function resetProgress() {
+  async function handleResetProgress() {
     if (!window.confirm("确定清除这条流程在当前浏览器中的全部进度吗？")) return;
-    const empty = createEmptyProgress(flow);
-    setProgress(empty);
-    window.localStorage.removeItem(storageKey);
+    await resetProgress();
+  }
+
+  if (!isLoaded || !isIdentityValid) {
+    return (
+      <p className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">
+        正在加载你的申请流程……
+      </p>
+    );
   }
 
   return (
@@ -165,7 +102,7 @@ export function FlowRunner({
               key={task.id}
               task={task}
               state={progress.taskStates[`${step.id}:${task.id}`]}
-              onChange={(state) => updateTask(task.id, state)}
+              onChange={(state) => updateTask(step.id, task.id, state)}
             />
           ))}
         </ul>
@@ -213,7 +150,7 @@ export function FlowRunner({
       <nav aria-label="流程步骤导航" className="grid grid-cols-2 gap-3">
         {previousSlug ? (
           <Link
-            href={`/apply/ca/visitor/f1/${previousSlug}`}
+            href={getStepPath(flow, previousSlug)}
             className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-center text-sm font-medium text-slate-800 hover:bg-slate-50"
           >
             ← 上一步
@@ -228,7 +165,7 @@ export function FlowRunner({
         )}
         {nextSlug ? (
           <Link
-            href={`/apply/ca/visitor/f1/${nextSlug}`}
+            href={getStepPath(flow, nextSlug)}
             className="rounded-xl bg-blue-700 px-4 py-3 text-center text-sm font-medium text-white hover:bg-blue-800"
           >
             下一步 →
@@ -245,7 +182,7 @@ export function FlowRunner({
 
       <button
         type="button"
-        onClick={resetProgress}
+        onClick={handleResetProgress}
         className="text-xs text-slate-500 underline underline-offset-2 hover:text-red-700"
       >
         清除当前浏览器中的流程进度

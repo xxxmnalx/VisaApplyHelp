@@ -47,9 +47,12 @@ export type FlowConfig = {
   id: string;
   version: string;
   countryCode: string;
+  countrySlug: string;
   countryName: string;
   visaType: string;
+  visaTypeSlug: string;
   status: string;
+  statusSlug: string;
   statusLabel: string;
   audience: string;
   lastVerified: string;
@@ -66,7 +69,16 @@ export type FlowProgressState = {
   flowId: string;
   version: string;
   selectedStatus: string;
+  currentStepId: string;
   taskStates: Record<string, TaskState>;
   timelineDates: Record<string, string>;
+  revision: number;
+  createdAt: string;
   updatedAt: string;
+};
+
+export type FlowIdentitySelection = {
+  flowId: string;
+  selectedStatus: string;
+  savedAt: string;
 };

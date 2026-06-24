@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getDefaultFlow } from "@/lib/flows";
+import { getDefaultFlow, getStepPath, listFlows } from "@/lib/flows";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl =
@@ -10,10 +10,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}${path}`,
     lastModified: new Date(flow.lastVerified),
   }));
-  const flowPages = flow.steps.map((step) => ({
-    url: `${baseUrl}/apply/ca/visitor/f1/${step.slug}`,
-    lastModified: new Date(flow.lastVerified),
-  }));
+  const flowPages = listFlows().flatMap((registeredFlow) =>
+    registeredFlow.steps.map((step) => ({
+      url: `${baseUrl}${getStepPath(registeredFlow, step.slug)}`,
+      lastModified: new Date(registeredFlow.lastVerified),
+    })),
+  );
 
   return [...staticPages, ...flowPages];
 }

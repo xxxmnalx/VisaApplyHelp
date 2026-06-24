@@ -2,40 +2,40 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { EligibilityChoice } from "@/lib/flow-types";
+import type { FlowConfig } from "@/lib/flow-types";
+import { getStepPath } from "@/lib/flows";
+import { LocalFlowIdentityRepository } from "@/lib/repositories/local-flow-repository";
 
 type IdentitySelectorProps = {
-  flowId: string;
-  choices: EligibilityChoice[];
-  destination: string;
+  flow: FlowConfig;
 };
 
-export function IdentitySelector({
-  flowId,
-  choices,
-  destination,
-}: IdentitySelectorProps) {
+export function IdentitySelector({ flow }: IdentitySelectorProps) {
   const router = useRouter();
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [hasChinesePassport, setHasChinesePassport] = useState(false);
   const [isInUnitedStates, setIsInUnitedStates] = useState(false);
   const [isAdult, setIsAdult] = useState(false);
 
-  const selectedChoice = choices.find((choice) => choice.id === selectedStatus);
+  const selectedChoice = flow.eligibilityChoices.find(
+    (choice) => choice.id === selectedStatus,
+  );
   const canContinue =
     Boolean(selectedChoice?.supported) &&
     hasChinesePassport &&
     isInUnitedStates &&
     isAdult;
 
-  function handleContinue() {
+  async function handleContinue() {
     if (!canContinue || !selectedStatus) return;
 
-    window.localStorage.setItem(
-      `visa-flow:${flowId}:identity`,
-      JSON.stringify({ selectedStatus, savedAt: new Date().toISOString() }),
-    );
-    router.push(destination);
+    const identityRepository = new LocalFlowIdentityRepository();
+    await identityRepository.save({
+      flowId: flow.id,
+      selectedStatus,
+      savedAt: new Date().toISOString(),
+    });
+    router.push(getStepPath(flow, flow.steps[0].slug));
   }
 
   return (
@@ -45,7 +45,7 @@ export function IdentitySelector({
           1. 选择你当前的美国身份
         </legend>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
-          {choices.map((choice) => (
+          {flow.eligibilityChoices.map((choice) => (
             <label
               key={choice.id}
               className={`rounded-xl border p-4 ${

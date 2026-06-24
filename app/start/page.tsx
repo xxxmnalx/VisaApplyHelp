@@ -20,11 +20,7 @@ export default function StartPage() {
         申请材料和步骤会随美国身份变化。0.1 版本只开放 F-1 在读学生，但底层已经为其他身份保留配置入口。
       </p>
       <div className="mt-8">
-        <IdentitySelector
-          flowId={flow.id}
-          choices={flow.eligibilityChoices}
-          destination={`/apply/ca/visitor/f1/${flow.steps[0].slug}`}
-        />
+        <IdentitySelector flow={flow} />
       </div>
       <p className="mt-6 text-xs leading-relaxed text-slate-500">
         本页只在你的浏览器中记录所选身份，不要求输入护照号码、生日、学校或申请号。

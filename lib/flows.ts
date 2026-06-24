@@ -3,12 +3,55 @@ import type { FlowConfig, FlowStep, OfficialSource } from "@/lib/flow-types";
 
 const flows: FlowConfig[] = [caTrvF1Flow];
 
+export function listFlows(): FlowConfig[] {
+  return [...flows];
+}
+
 export function getFlow(flowId: string): FlowConfig | null {
   return flows.find((flow) => flow.id === flowId) ?? null;
 }
 
+export function getFlowByRoute(
+  countrySlug: string,
+  visaTypeSlug: string,
+  statusSlug: string,
+): FlowConfig | null {
+  return (
+    flows.find(
+      (flow) =>
+        flow.countrySlug === countrySlug &&
+        flow.visaTypeSlug === visaTypeSlug &&
+        flow.statusSlug === statusSlug,
+    ) ?? null
+  );
+}
+
 export function getDefaultFlow(): FlowConfig {
   return caTrvF1Flow;
+}
+
+export function getFlowPath(flow: FlowConfig): string {
+  return `/apply/${flow.countrySlug}/${flow.visaTypeSlug}/${flow.statusSlug}`;
+}
+
+export function getStepPath(flow: FlowConfig, stepSlug: string): string {
+  return `${getFlowPath(flow)}/${stepSlug}`;
+}
+
+export function getFlowStaticParams(): Array<{
+  country: string;
+  visaType: string;
+  status: string;
+  step: string;
+}> {
+  return flows.flatMap((flow) =>
+    flow.steps.map((step) => ({
+      country: flow.countrySlug,
+      visaType: flow.visaTypeSlug,
+      status: flow.statusSlug,
+      step: step.slug,
+    })),
+  );
 }
 
 export function getFlowStep(
