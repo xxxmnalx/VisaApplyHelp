@@ -1,4 +1,4 @@
-import type { FlowTask, TaskState } from "@/lib/flow-types";
+import type { FlowTask, OfficialSource, TaskState } from "@/lib/flow-types";
 
 const kindLabels = {
   required: "必做",
@@ -10,12 +10,14 @@ const kindLabels = {
 type ChecklistItemCardProps = {
   task: FlowTask;
   state?: TaskState;
+  sources?: OfficialSource[];
   onChange: (state: TaskState | null) => void;
 };
 
 export function ChecklistItemCard({
   task,
   state,
+  sources = [],
   onChange,
 }: ChecklistItemCardProps) {
   return (
@@ -37,6 +39,21 @@ export function ChecklistItemCard({
           {task.description ? (
             <span className="mt-1 block text-sm leading-relaxed text-slate-600">
               {task.description}
+            </span>
+          ) : null}
+          {sources.length > 0 ? (
+            <span className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+              {sources.map((source) => (
+                <a
+                  key={source.id}
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-blue-700 underline underline-offset-2 hover:text-blue-900"
+                >
+                  {source.organization}：{source.label} ↗
+                </a>
+              ))}
             </span>
           ) : null}
         </span>

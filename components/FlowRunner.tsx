@@ -16,7 +16,7 @@ import type {
   FlowStep,
   OfficialSource,
 } from "@/lib/flow-types";
-import { getStepPath } from "@/lib/flows";
+import { getStepPath, getTaskSources } from "@/lib/flows";
 
 type FlowRunnerProps = {
   flow: FlowConfig;
@@ -102,6 +102,7 @@ export function FlowRunner({
               key={task.id}
               task={task}
               state={progress.taskStates[`${step.id}:${task.id}`]}
+              sources={getTaskSources(flow, task)}
               onChange={(state) => updateTask(step.id, task.id, state)}
             />
           ))}

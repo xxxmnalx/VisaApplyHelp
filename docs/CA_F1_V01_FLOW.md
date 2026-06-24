@@ -477,9 +477,25 @@ passportReceivedAt
 
 ## 10. 待核验与待决策
 
+### 10.1 已核验（2026-06-24，来源见下）
+
+- **访客签证申请费**：每人 CAD 100；家庭（5 人及以上同时同地申请）最高 CAD 500。来源：[IRCC 费用清单](https://ircc.canada.ca/english/information/fees/fees.asp)。
+- **生物信息费**：每人 CAD 85；家庭（2 人及以上同时申请）最高 CAD 170。来源同上。
+- **生物信息采集对象与缴费时点**：14–79 岁通常需采集，提交申请时缴纳生物信息费。来源：[IRCC 是否需要采集生物信息](https://www.canada.ca/en/immigration-refugees-citizenship/services/biometrics/need-biometrics.html)。
+- **BIL 采集截止期**：自 BIL 标注日期起 30 天内完成；无法按时可通过官方网表申请延期。来源：[IRCC 何时采集（临时居民）](https://www.canada.ca/en/immigration-refugees-citizenship/services/biometrics/when-to-give-temporary-residence.html)。
+- **既往生物信息有效期**：10 年内有效，期内通常无需重复采集。来源同上。
+- **处理时间口径**：IRCC 公布的处理时间为参考，且生物信息采集所需时间不计入处理时长；不代表批准保证。
+- **官方资格基线**：有效旅行证件、足够资金、离境意图与会促使其离开的联系。来源：[IRCC 访客签证资格](https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/eligibility.html)。
+
+上述数值已写入 `config/flows/ca-trv-f1.ts` 的 `officialFee` / `biometricsFee` 字段，并标注 `lastVerified`。费用数字不写入各任务文案，避免内容层硬编码易变值，留待总览页（#2 未做）统一呈现。
+
+### 10.2 仍待核验 / 待决策
+
 - F-1 0.1 是否只覆盖“旅游”，还是包含无邀请人的普通短期访问。
-- IRCC Portal 与 IRCC Portal New Version 的实际分流条件和页面文案。
-- F-1 核心材料中哪些属于官方固定要求，哪些只是常见推荐材料。
-- 美国 VAC 当前护照递交方式、地址、服务费、付款与回邮要求。
+- IRCC Portal 与 IRCC Portal New Version 的实际分流条件和页面文案（本轮未逐字核验，仍以官方当前指引为准）。
+- F-1 材料中除护照、资金证明等官方要求外，I-20、I-94、在读证明等仅作支持性建议材料——本轮按此定性，最终仍以 IRCC Portal 个性化清单为准。
+- 美国 VAC 当前护照递交方式、地址、服务费、付款与回邮要求（VFS 美国站，变动频繁，本轮未硬编码，文案统一指向 VFS 当前页面）。
 - 是否在 0.1 实现问卷提交后端，还是只实现完成页与问卷原型。
 - 时间线样本公开阈值是否采用 10 条，后续是否提高到 20 或 30 条。
+
+> 第三方参考（北美票帝，见 §9）用于理解操作顺序与常见坑（如文件大小限制、尽快预约、VFS 付款方式、每人单独回邮标签），均以「常见经验」措辞写入任务说明，不作为官方要求依据。

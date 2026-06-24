@@ -1,5 +1,10 @@
 import { caTrvF1Flow } from "@/config/flows/ca-trv-f1";
-import type { FlowConfig, FlowStep, OfficialSource } from "@/lib/flow-types";
+import type {
+  FlowConfig,
+  FlowStep,
+  FlowTask,
+  OfficialSource,
+} from "@/lib/flow-types";
 
 const flows: FlowConfig[] = [caTrvF1Flow];
 
@@ -66,6 +71,14 @@ export function getStepSources(
   step: FlowStep,
 ): OfficialSource[] {
   const ids = new Set(step.officialLinkIds ?? []);
+  return flow.sources.filter((source) => ids.has(source.id));
+}
+
+export function getTaskSources(
+  flow: FlowConfig,
+  task: FlowTask,
+): OfficialSource[] {
+  const ids = new Set(task.sourceIds ?? []);
   return flow.sources.filter((source) => ids.has(source.id));
 }
 
