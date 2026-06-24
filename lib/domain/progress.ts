@@ -1,9 +1,23 @@
-import type {
-  FlowConfig,
-  FlowProgressState,
-  FlowStep,
-  TaskState,
+import {
+  TASK_STATES,
+  type FlowConfig,
+  type FlowProgressState,
+  type FlowStep,
+  type TaskState,
 } from "@/lib/flow-types";
+
+const VALID_TASK_STATES = new Set<string>(TASK_STATES);
+
+function sanitizeTaskStates(value: unknown): Record<string, TaskState> {
+  if (!value || typeof value !== "object") return {};
+  const result: Record<string, TaskState> = {};
+  for (const [key, state] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof state === "string" && VALID_TASK_STATES.has(state)) {
+      result[key] = state as TaskState;
+    }
+  }
+  return result;
+}
 
 export function createEmptyProgress(
   flow: FlowConfig,
@@ -46,10 +60,7 @@ export function normalizeProgress(
       typeof candidate.currentStepId === "string"
         ? candidate.currentStepId
         : flow.steps[0]?.id ?? "",
-    taskStates:
-      candidate.taskStates && typeof candidate.taskStates === "object"
-        ? candidate.taskStates
-        : {},
+    taskStates: sanitizeTaskStates(candidate.taskStates),
     timelineDates:
       candidate.timelineDates && typeof candidate.timelineDates === "object"
         ? candidate.timelineDates
@@ -101,16 +112,19 @@ export function calculateCompletionPercentage(
   flow: FlowConfig,
   progress: FlowProgressState,
 ): number {
-  const totalTasks = flow.steps.reduce(
-    (total, current) => total + current.tasks.length,
-    0,
+  // 「本站流程完成度」只衡量当前适用的核心（必做）任务，不计建议、
+  // 条件、阅读确认或标记为不适用的事项（见 PRODUCT_SPEC §7.4）。
+  const requiredKeys = flow.steps.flatMap((step) =>
+    step.tasks
+      .filter((task) => task.kind === "required")
+      .map((task) => `${step.id}:${task.id}`),
   );
-  if (totalTasks === 0) return 0;
+  if (requiredKeys.length === 0) return 0;
 
-  const completedTasks = Object.values(progress.taskStates).filter(
-    (state) => state === "completed",
+  const completedRequired = requiredKeys.filter(
+    (key) => progress.taskStates[key] === "completed",
   ).length;
-  return Math.round((completedTasks / totalTasks) * 100);
+  return Math.round((completedRequired / requiredKeys.length) * 100);
 }
 
 export function countMissingRequiredTasks(

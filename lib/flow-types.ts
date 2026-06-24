@@ -26,6 +26,8 @@ export type FlowStep = {
   tasks: FlowTask[];
   officialLinkIds?: string[];
   timelineEvent?: TimelineEvent;
+  /** 该步骤顶部渲染费用/处理时间/时间线占位的总览面板。 */
+  showSummaryPanel?: boolean;
 };
 
 export type OfficialSource = {
@@ -63,7 +65,13 @@ export type FlowConfig = {
   steps: FlowStep[];
 };
 
-export type TaskState = "completed" | "skipped";
+export type TaskState = "completed" | "skipped" | "not-applicable";
+
+export const TASK_STATES: readonly TaskState[] = [
+  "completed",
+  "skipped",
+  "not-applicable",
+];
 
 export type FlowProgressState = {
   flowId: string;

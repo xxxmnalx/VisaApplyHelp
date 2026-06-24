@@ -59,13 +59,36 @@ export function ChecklistItemCard({
         </span>
       </label>
       {task.kind !== "required" ? (
-        <button
-          type="button"
-          onClick={() => onChange(state === "skipped" ? null : "skipped")}
-          className="mt-3 text-xs text-slate-500 underline underline-offset-2 hover:text-slate-800"
-        >
-          {state === "skipped" ? "取消跳过" : "暂时跳过 / 不适用"}
-        </button>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            aria-pressed={state === "skipped"}
+            aria-label={`暂时跳过：${task.title}`}
+            onClick={() => onChange(state === "skipped" ? null : "skipped")}
+            className={`inline-flex min-h-[44px] items-center rounded-lg px-3 py-2 text-xs font-medium transition ${
+              state === "skipped"
+                ? "bg-slate-800 text-white ring-2 ring-slate-900"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            {state === "skipped" ? "✓ 已跳过" : "暂时跳过"}
+          </button>
+          <button
+            type="button"
+            aria-pressed={state === "not-applicable"}
+            aria-label={`标记不适用：${task.title}`}
+            onClick={() =>
+              onChange(state === "not-applicable" ? null : "not-applicable")
+            }
+            className={`inline-flex min-h-[44px] items-center rounded-lg px-3 py-2 text-xs font-medium transition ${
+              state === "not-applicable"
+                ? "bg-slate-800 text-white ring-2 ring-slate-900"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            {state === "not-applicable" ? "✓ 已标记不适用" : "不适用"}
+          </button>
+        </div>
       ) : null}
     </li>
   );
