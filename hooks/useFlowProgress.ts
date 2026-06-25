@@ -51,7 +51,9 @@ export function useFlowProgress(
       const identity = await identityRepository.load(flow.id);
       if (!isActive) return;
 
-      const identityIsValid = identity?.selectedStatus === flow.status;
+      const identityIsValid =
+        identity?.selectedStatus === flow.status &&
+        Boolean(identity?.consentAcceptedAt);
       setIsIdentityValid(identityIsValid);
       if (!identityIsValid) {
         setIsLoaded(true);
