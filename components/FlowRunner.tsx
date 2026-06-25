@@ -123,26 +123,33 @@ export function FlowRunner({
         </ul>
       </section>
 
-      {step.timelineEvent ? (
-        <section className="rounded-xl border border-violet-200 bg-violet-50 p-4">
-          <label
-            htmlFor={step.timelineEvent.id}
-            className="text-sm font-medium text-violet-950"
-          >
-            {step.timelineEvent.label}
-          </label>
-          <p className="mt-1 text-xs leading-relaxed text-violet-800">
-            {step.timelineEvent.description} 日期只保存在当前浏览器。
+      {step.timelineEvents && step.timelineEvents.length > 0 ? (
+        <section className="space-y-3 rounded-xl border border-violet-200 bg-violet-50 p-4">
+          <p className="text-xs leading-relaxed text-violet-800">
+            记录关键日期可估算你自己的耗时。日期只保存在当前浏览器。
           </p>
-          <input
-            id={step.timelineEvent.id}
-            type="date"
-            value={progress.timelineDates[step.timelineEvent.id] ?? ""}
-            onChange={(event) =>
-              updateTimelineDate(step.timelineEvent!.id, event.target.value)
-            }
-            className="mt-3 w-full rounded-lg border border-violet-200 bg-white px-3 py-2 text-sm text-slate-950"
-          />
+          {step.timelineEvents.map((timelineEvent) => (
+            <div key={timelineEvent.id}>
+              <label
+                htmlFor={timelineEvent.id}
+                className="text-sm font-medium text-violet-950"
+              >
+                {timelineEvent.label}
+              </label>
+              <p className="mt-1 text-xs leading-relaxed text-violet-800">
+                {timelineEvent.description}
+              </p>
+              <input
+                id={timelineEvent.id}
+                type="date"
+                value={progress.timelineDates[timelineEvent.id] ?? ""}
+                onChange={(event) =>
+                  updateTimelineDate(timelineEvent.id, event.target.value)
+                }
+                className="mt-2 w-full rounded-lg border border-violet-200 bg-white px-3 py-2 text-sm text-slate-950"
+              />
+            </div>
+          ))}
         </section>
       ) : null}
 
