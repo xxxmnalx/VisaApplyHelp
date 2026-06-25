@@ -20,6 +20,11 @@ export function ChecklistItemCard({
   sources = [],
   onChange,
 }: ChecklistItemCardProps) {
+  // 必做项默认不可跳过；仅「有条件才适用」的必做项可标不适用。
+  const canSkip = task.kind !== "required";
+  const canMarkNotApplicable =
+    task.kind !== "required" || Boolean(task.allowNotApplicable);
+
   return (
     <li className="rounded-xl border border-slate-200 bg-white p-4">
       <label className="flex cursor-pointer items-start gap-3">
@@ -58,36 +63,40 @@ export function ChecklistItemCard({
           ) : null}
         </span>
       </label>
-      {task.kind !== "required" ? (
+      {canSkip || canMarkNotApplicable ? (
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            aria-pressed={state === "skipped"}
-            aria-label={`暂时跳过：${task.title}`}
-            onClick={() => onChange(state === "skipped" ? null : "skipped")}
-            className={`inline-flex min-h-[44px] items-center rounded-lg px-3 py-2 text-xs font-medium transition ${
-              state === "skipped"
-                ? "bg-slate-800 text-white ring-2 ring-slate-900"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            {state === "skipped" ? "✓ 已跳过" : "暂时跳过"}
-          </button>
-          <button
-            type="button"
-            aria-pressed={state === "not-applicable"}
-            aria-label={`标记不适用：${task.title}`}
-            onClick={() =>
-              onChange(state === "not-applicable" ? null : "not-applicable")
-            }
-            className={`inline-flex min-h-[44px] items-center rounded-lg px-3 py-2 text-xs font-medium transition ${
-              state === "not-applicable"
-                ? "bg-slate-800 text-white ring-2 ring-slate-900"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            {state === "not-applicable" ? "✓ 已标记不适用" : "不适用"}
-          </button>
+          {canSkip ? (
+            <button
+              type="button"
+              aria-pressed={state === "skipped"}
+              aria-label={`暂时跳过：${task.title}`}
+              onClick={() => onChange(state === "skipped" ? null : "skipped")}
+              className={`inline-flex min-h-[44px] items-center rounded-lg px-3 py-2 text-xs font-medium transition ${
+                state === "skipped"
+                  ? "bg-slate-800 text-white ring-2 ring-slate-900"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              {state === "skipped" ? "✓ 已跳过" : "暂时跳过"}
+            </button>
+          ) : null}
+          {canMarkNotApplicable ? (
+            <button
+              type="button"
+              aria-pressed={state === "not-applicable"}
+              aria-label={`标记不适用：${task.title}`}
+              onClick={() =>
+                onChange(state === "not-applicable" ? null : "not-applicable")
+              }
+              className={`inline-flex min-h-[44px] items-center rounded-lg px-3 py-2 text-xs font-medium transition ${
+                state === "not-applicable"
+                  ? "bg-slate-800 text-white ring-2 ring-slate-900"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              {state === "not-applicable" ? "✓ 已标记不适用" : "不适用"}
+            </button>
+          ) : null}
         </div>
       ) : null}
     </li>

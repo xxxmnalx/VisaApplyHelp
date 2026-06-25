@@ -10,6 +10,11 @@ export type FlowTask = {
   description?: string;
   kind: FlowTaskKind;
   sourceIds?: string[];
+  /**
+   * 允许把这个必做任务标记为「不适用」（标记后从完成度分母剔除）。
+   * 用于「满足条件才适用」的必做项，例如无需采集生物信息时的采集步骤。
+   */
+  allowNotApplicable?: boolean;
 };
 
 export type TimelineEvent = {

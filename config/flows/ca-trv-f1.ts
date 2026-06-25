@@ -595,16 +595,18 @@ export const caTrvF1Flow: FlowConfig = {
           title: "已阅读 BIL 中的地点和截止日期",
           kind: "required",
           description:
-            "官方要求。一般需在 BIL 标注日期起 30 天内完成采集；无法按时可通过官方网表申请延期。",
+            "官方要求。一般需在 BIL 标注日期起 30 天内完成采集；无法按时可通过官方网表申请延期。若官方确认无需采集，可标记不适用。",
           sourceIds: ["biometrics"],
+          allowNotApplicable: true,
         },
         {
           id: "appointment-booked",
           title: "已通过官方入口预约采集点",
           kind: "required",
           description:
-            "官方要求。在美国可用采集点预约；常见经验是放号窗口有限，收到 BIL 后尽快预约。",
+            "官方要求。在美国可用采集点预约；常见经验是放号窗口有限，收到 BIL 后尽快预约。若无需采集，可标记不适用。",
           sourceIds: ["biometrics"],
+          allowNotApplicable: true,
         },
         {
           id: "appointment-saved",
@@ -617,13 +619,16 @@ export const caTrvF1Flow: FlowConfig = {
           title: "已准备护照、BIL 和预约要求文件",
           kind: "required",
           description:
-            "官方要求。现场通常需出示护照与 BIL；按通知准备所需文件。",
+            "官方要求。现场通常需出示护照与 BIL；按通知准备所需文件。若无需采集，可标记不适用。",
+          allowNotApplicable: true,
         },
         {
           id: "biometrics-done",
           title: "已完成指纹和照片采集",
           kind: "required",
-          description: "官方要求。完成采集后留意账户状态更新。",
+          description:
+            "官方要求。完成采集后留意账户状态更新。若官方确认无需采集，可标记不适用。",
+          allowNotApplicable: true,
         },
       ],
     },

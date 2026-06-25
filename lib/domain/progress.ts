@@ -114,28 +114,29 @@ export function calculateCompletionPercentage(
 ): number {
   // 「本站流程完成度」只衡量当前适用的核心（必做）任务，不计建议、
   // 条件、阅读确认或标记为不适用的事项（见 PRODUCT_SPEC §7.4）。
-  const requiredKeys = flow.steps.flatMap((step) =>
+  const applicableRequiredKeys = flow.steps.flatMap((step) =>
     step.tasks
       .filter((task) => task.kind === "required")
-      .map((task) => `${step.id}:${task.id}`),
+      .map((task) => `${step.id}:${task.id}`)
+      .filter((key) => progress.taskStates[key] !== "not-applicable"),
   );
-  if (requiredKeys.length === 0) return 0;
+  if (applicableRequiredKeys.length === 0) return 0;
 
-  const completedRequired = requiredKeys.filter(
+  const completedRequired = applicableRequiredKeys.filter(
     (key) => progress.taskStates[key] === "completed",
   ).length;
-  return Math.round((completedRequired / requiredKeys.length) * 100);
+  return Math.round((completedRequired / applicableRequiredKeys.length) * 100);
 }
 
 export function countMissingRequiredTasks(
   step: FlowStep,
   progress: FlowProgressState,
 ): number {
-  return step.tasks.filter(
-    (task) =>
-      task.kind === "required" &&
-      progress.taskStates[`${step.id}:${task.id}`] !== "completed",
-  ).length;
+  return step.tasks.filter((task) => {
+    if (task.kind !== "required") return false;
+    const state = progress.taskStates[`${step.id}:${task.id}`];
+    return state !== "completed" && state !== "not-applicable";
+  }).length;
 }
 
 function withRevision(
