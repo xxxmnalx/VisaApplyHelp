@@ -96,8 +96,14 @@ export function useFlowProgress(
   }
 
   async function resetProgress() {
-    await progressRepository.clear(flow.id);
+    // 清除进度时一并清掉身份选择键，避免 localStorage 残留 selectedStatus，
+    // 兑现隐私页「清除即不再保留」的承诺（PROJECT_CORE §5.4）。
+    await Promise.all([
+      progressRepository.clear(flow.id),
+      identityRepository.clear(flow.id),
+    ]);
     setProgress(createEmptyProgress(flow));
+    setIsIdentityValid(false);
   }
 
   return {

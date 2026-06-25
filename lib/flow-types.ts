@@ -10,6 +10,11 @@ export type FlowTask = {
   description?: string;
   kind: FlowTaskKind;
   sourceIds?: string[];
+  /**
+   * 允许把这个必做任务标记为「不适用」（标记后从完成度分母剔除）。
+   * 用于「满足条件才适用」的必做项，例如无需采集生物信息时的采集步骤。
+   */
+  allowNotApplicable?: boolean;
 };
 
 export type TimelineEvent = {
@@ -26,6 +31,8 @@ export type FlowStep = {
   tasks: FlowTask[];
   officialLinkIds?: string[];
   timelineEvent?: TimelineEvent;
+  /** 该步骤顶部渲染费用/处理时间/时间线占位的总览面板。 */
+  showSummaryPanel?: boolean;
 };
 
 export type OfficialSource = {
@@ -63,7 +70,13 @@ export type FlowConfig = {
   steps: FlowStep[];
 };
 
-export type TaskState = "completed" | "skipped";
+export type TaskState = "completed" | "skipped" | "not-applicable";
+
+export const TASK_STATES: readonly TaskState[] = [
+  "completed",
+  "skipped",
+  "not-applicable",
+];
 
 export type FlowProgressState = {
   flowId: string;

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChecklistItemCard } from "@/components/ChecklistItemCard";
+import { FlowOverviewPanel } from "@/components/FlowOverviewPanel";
 import { FlowProgress } from "@/components/FlowProgress";
 import { OfficialLinkCard } from "@/components/OfficialLinkCard";
 import { useFlowProgress } from "@/hooks/useFlowProgress";
@@ -50,9 +51,13 @@ export function FlowRunner({
   const completionPercentage = calculateCompletionPercentage(flow, progress);
   const currentIndex = flow.steps.findIndex((candidate) => candidate.id === step.id);
   const missingRequired = countMissingRequiredTasks(step, progress);
+  const processingTimesSource = flow.sources.find(
+    (source) => source.id === "processing-times",
+  );
 
   async function handleResetProgress() {
     if (!window.confirm("确定清除这条流程在当前浏览器中的全部进度吗？")) return;
+    // 清除后 isIdentityValid 变为 false，由上方失效跳转 effect 统一回到 /start。
     await resetProgress();
   }
 
@@ -86,6 +91,15 @@ export function FlowRunner({
         </h1>
         <p className="mt-2 leading-relaxed text-slate-600">{step.summary}</p>
       </header>
+
+      {step.showSummaryPanel ? (
+        <FlowOverviewPanel
+          officialFee={flow.officialFee}
+          biometricsFee={flow.biometricsFee}
+          lastVerified={flow.lastVerified}
+          processingTimesSource={processingTimesSource}
+        />
+      ) : null}
 
       <section aria-labelledby="checklist-title">
         <div className="flex items-end justify-between gap-4">

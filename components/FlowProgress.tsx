@@ -17,6 +17,7 @@ export function FlowProgress({
         </span>
         <span>本站流程完成度 {completionPercentage}%</span>
       </div>
+      <p className="mt-1 text-[11px] text-slate-400">完成度仅统计必做项</p>
       <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
         <div
           className="h-full rounded-full bg-blue-600 transition-[width]"
