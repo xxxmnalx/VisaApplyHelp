@@ -63,6 +63,18 @@ export function ChecklistItemCard({
           ) : null}
         </span>
       </label>
+      {task.detailPoints && task.detailPoints.length > 0 ? (
+        <details className="mt-2">
+          <summary className="cursor-pointer text-xs font-medium text-blue-700 hover:text-blue-900">
+            展开详细说明
+          </summary>
+          <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-slate-600">
+            {task.detailPoints.map((point, index) => (
+              <li key={index}>{point}</li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
       {canSkip || canMarkNotApplicable ? (
         <div className="mt-3 flex flex-wrap items-center gap-2">
           {canSkip ? (
