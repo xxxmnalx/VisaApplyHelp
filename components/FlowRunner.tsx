@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChecklistItemCard } from "@/components/ChecklistItemCard";
+import { EtaEstimator } from "@/components/EtaEstimator";
 import { FlowOverviewPanel } from "@/components/FlowOverviewPanel";
 import { FlowProgress } from "@/components/FlowProgress";
 import { OfficialLinkCard } from "@/components/OfficialLinkCard";
@@ -12,6 +13,7 @@ import {
   calculateCompletionPercentage,
   countMissingRequiredTasks,
 } from "@/lib/domain/progress";
+import { todayDateOnly } from "@/lib/domain/eta";
 import type {
   FlowConfig,
   FlowStep,
@@ -97,6 +99,15 @@ export function FlowRunner({
           officialFee={flow.officialFee}
           biometricsFee={flow.biometricsFee}
           lastVerified={flow.lastVerified}
+          processingTimesSource={processingTimesSource}
+        />
+      ) : null}
+
+      {step.showEtaEstimator ? (
+        <EtaEstimator
+          stages={flow.etaStages}
+          submitDate={progress.timelineDates.etaSubmitDate ?? todayDateOnly()}
+          onChangeDate={(date) => updateTimelineDate("etaSubmitDate", date)}
           processingTimesSource={processingTimesSource}
         />
       ) : null}
