@@ -11,7 +11,6 @@ const CG_SF = "日本驻旧金山总领事馆";
 const CBP = "美国海关与边境保护局（CBP）";
 const SEVP = "美国 SEVP / 国土安全部（DHS）";
 const USCIS = "美国公民及移民服务局（USCIS）";
-const PIAODI = "北美票帝 piao.tips（第三方经验，非官方）";
 
 /** 身份差异集中在这里：文案与在美身份证明材料按身份切换，其余步骤共享。 */
 type IdentityVariant = {
@@ -43,7 +42,7 @@ const identityVariants: Record<SupportedIdentityCode, IdentityVariant> = {
         kind: "recommended",
         description:
           "本站建议（第三方经验）。部分领馆清单还会列出 I-94 打印件、在读证明与护照美签页复印件，备上更稳妥；I-94 可在 CBP 官方站查询打印。",
-        sourceIds: ["cbp-i94", "piaodi-jp-consolidated"],
+        sourceIds: ["cbp-i94"],
       },
     ],
   },
@@ -66,7 +65,6 @@ const identityVariants: Record<SupportedIdentityCode, IdentityVariant> = {
           "us-embassy-visa",
           "sf-multi-checklist",
           "uscis-i797",
-          "piaodi-jp-consolidated",
         ],
       },
       {
@@ -75,7 +73,7 @@ const identityVariants: Record<SupportedIdentityCode, IdentityVariant> = {
         kind: "recommended",
         description:
           "本站建议（第三方经验）。注明职位、入职时间与薪资的在职信、近 2–3 个月工资单与 I-94 打印件可佐证身份与约束力，备上更稳妥。",
-        sourceIds: ["cbp-i94", "piaodi-jp-consolidated"],
+        sourceIds: ["cbp-i94"],
       },
     ],
   },
@@ -123,7 +121,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
             "值机时需用智能手机等设备联网实时展示电子签证（无此类设备只能走纸质路径）。",
             "官方明示不接受 B-1/B-2 短期身份者申请；第三方经验：领馆会核查你的 I-94 与长期居留身份。",
           ],
-          sourceIds: ["mofa-evisa", "us-embassy-visa", "piaodi-jp-evisa"],
+          sourceIds: ["mofa-evisa", "us-embassy-visa"],
         },
         {
           id: "evisa-scope",
@@ -152,7 +150,6 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
             "jp-jurisdiction",
             "mofa-china-multi",
             "sf-multi-checklist",
-            "piaodi-jp-consolidated",
           ],
         },
         {
@@ -169,7 +166,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           kind: "recommended",
           description:
             "本站建议。最早可在计划赴日日期前 3 个月提交，官方与第三方均建议提前 1–1.5 个月；全程无加急服务，旺季更要预留缓冲。",
-          sourceIds: ["evisa-faq", "piaodi-jp-evisa"],
+          sourceIds: ["evisa-faq"],
         },
       ],
     },
@@ -196,7 +193,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           kind: "required",
           description:
             "官方要求。6 个月内拍摄、纯色背景。第三方经验：领馆会核查照片文件的 EXIF 拍摄时间，复用旧照片会被要求重拍重传，曾把出签拖长到数周。",
-          sourceIds: ["us-embassy-visa", "piaodi-jp-evisa"],
+          sourceIds: ["us-embassy-visa"],
         },
         ...variant.statusProofTasks,
         {
@@ -213,7 +210,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           kind: "required",
           description:
             "官方要求。每日行程须具体——只写 sightseeing in Tokyo 会被退回；行程日期必须与机票完全一致、逐日连贯无断档。",
-          sourceIds: ["us-embassy-visa", "piaodi-jp-evisa"],
+          sourceIds: ["us-embassy-visa"],
         },
         {
           id: "flight-itinerary",
@@ -221,7 +218,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           kind: "required",
           description:
             "官方要求。往返机票行程单即可、无需实际出票；第三方经验：常用可免费取消 / 改期的预订，行程单须含航空公司确认号。",
-          sourceIds: ["us-embassy-visa", "piaodi-jp-evisa"],
+          sourceIds: ["us-embassy-visa"],
         },
         {
           id: "bank-statement",
@@ -229,7 +226,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           kind: "required",
           description:
             "官方要求（驻美大使馆·观光单次口径）。最近 1 个月银行账单，不接受在职证明或工资单替代；第三方经验：单次观光对金额较宽松，保持数千美元余额即可。",
-          sourceIds: ["us-embassy-visa", "piaodi-jp-evisa"],
+          sourceIds: ["us-embassy-visa"],
         },
         {
           id: "scan-quality",
@@ -306,7 +303,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           kind: "informational",
           description:
             "官方口径。审理时钟从「使领馆确认材料齐全」起算而非提交日：原则上 5 个工作日审结，旺季、补件、面试或报东京复核时可能超过 1 个月。第三方经验（2023–2024）：各领馆全程 2–23 天不等，纽约领区偏慢。",
-          sourceIds: ["evisa-faq", "piaodi-jp-evisa"],
+          sourceIds: ["evisa-faq"],
         },
         {
           id: "respond-rfe",
@@ -369,7 +366,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           kind: "recommended",
           description:
             "本站建议（第三方经验）。在线缴费可能触发信用卡风控导致失败并拖延出签，建议用美国发行的信用卡。",
-          sourceIds: ["boston-payment", "piaodi-jp-evisa"],
+          sourceIds: ["boston-payment"],
         },
       ],
     },
@@ -422,7 +419,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           kind: "required",
           description:
             "进度确认。核对姓名、护照号、有效期与停留天数——停留期由使领馆在 15/30/90 天中裁量（第三方经验：常见获批 15 天），按获批天数规划行程。",
-          sourceIds: ["mofa-evisa", "piaodi-jp-evisa"],
+          sourceIds: ["mofa-evisa"],
         },
         {
           id: "online-display",
@@ -604,20 +601,6 @@ export function buildJpEvisaFlow(identity: SupportedIdentityCode): FlowConfig {
         label: "I-797 批准通知说明",
         organization: USCIS,
         url: "https://www.uscis.gov/forms/filing-guidance/form-i-797-types-and-functions",
-        lastVerified: "2026-07-07",
-      },
-      {
-        id: "piaodi-jp-evisa",
-        label: "日本 eVISA 申请指南（第三方经验）",
-        organization: PIAODI,
-        url: "https://piao.tips/japan-evisa/",
-        lastVerified: "2026-07-07",
-      },
-      {
-        id: "piaodi-jp-consolidated",
-        label: "在美申请日本签证综合指南（第三方经验）",
-        organization: PIAODI,
-        url: "https://piao.tips/japan-visa-in-the-us-consolidated/",
         lastVerified: "2026-07-07",
       },
     ],

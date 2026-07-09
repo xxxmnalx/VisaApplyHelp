@@ -74,7 +74,7 @@ const identityVariants: Record<SupportedIdentityCode, IdentityVariant> = {
         detailPoints: [
           "美签贴纸已过期但身份有效（I-797 / I-94 在期）仍可正常申请 TRV：第三方经验是附一封身份解释信 + I-797 / I-94，并说明返美安排（如 AVR 自动重新生效政策）；此为经验做法、非官方要求。",
         ],
-        sourceIds: ["uscis-i797", "piaodi-ca"],
+        sourceIds: ["uscis-i797"],
       },
       {
         id: "paystubs",
@@ -104,7 +104,7 @@ function fundsDetailPoints(variant: IdentityVariant): string[] {
     "自查基准（本站建议、非官方门槛）：往返机票 +（每日食宿交通杂费 × 停留天数）+ 一定缓冲，用来估算自己是否负担得起。",
     "常见证明形式：银行对账单（常见近 3 个月交易 + 近 6 个月余额，月数因签证办公室而异）、在职 / 雇主信、工资单；由他人资助则需资助方说明信 + 资助方流水 / 在职信 + 资助方证件复印件。",
     variant.canPlusPoint,
-    "第三方经验（北美票帝，非官方、不构成获签保证）：有用户反馈美国账户约 3,000 USD 余额一般够用；金额因人、行程与政策而异。",
+    "第三方经验（非官方、不构成获签保证）：有用户反馈美国账户约 3,000 USD 余额一般够用；金额因人、行程与政策而异。",
   ];
 }
 
@@ -188,11 +188,11 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
             "打开方式：先把 PDF 下载到电脑，再用 Adobe Acrobat Reader（版本 10 及以上）打开；直接在浏览器或系统预览里打开会填不了、也验证不了。",
             "填写：逐项如实填写全部必填项，与护照等证件完全一致；漏填必填项时验证会失败并提示。",
             "验证：填完点表上的「Validate」按钮，表尾会生成带条码的新页面——在线路径保存这份验证后的 PDF 备用，纸质路径打印后把条码页放在材料最上面。",
-            "第三方经验（北美票帝）：UCI 号（如有）在过往加签签证页右下角 Person 下方的黑体数字；在美国换发的中国护照，Country of issue 填中国、Place of Issue 填换发城市（如 Chicago）。",
-            "第三方经验（北美票帝）：Employment 是必填项，在读学生可写在读身份（如 Undergraduate student）、雇主栏填学校名称。",
+            "第三方经验：UCI 号（如有）在过往加签签证页右下角 Person 下方的黑体数字；在美国换发的中国护照，Country of issue 填中国、Place of Issue 填换发城市（如 Chicago）。",
+            "第三方经验：Employment 是必填项，在读学生可写在读身份（如 Undergraduate student）、雇主栏填学校名称。",
             "现在只需下载并熟悉表格；实际是否要交、交到哪里，等下一步系统生成你的个性化清单后再确认。",
           ],
-          sourceIds: ["imm5257-form", "validate-forms", "piaodi-ca"],
+          sourceIds: ["imm5257-form", "validate-forms"],
         },
         ...variant.statusProofTasks,
         {
@@ -202,7 +202,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           description:
             "官方要求。无官方固定金额；展开查看自查基准、证明形式与 CAN+（凭有效美签自动加速、材料常可简化）的说明。",
           detailPoints: fundsDetailPoints(variant),
-          sourceIds: ["supporting-documents", "canplus", "piaodi-ca"],
+          sourceIds: ["supporting-documents", "canplus"],
         },
         {
           id: "photo",
@@ -219,9 +219,9 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           description:
             "视情况。以系统生成的个性化清单为准，可能包含额外表格或解释信。",
           detailPoints: [
-            "第三方经验（北美票帝）：常见被要求的补充项有中国居民身份证正反面扫描、旅行计划说明（大致日期地点即可，订单非必需）等；一切以你自己的清单为准。",
+            "第三方经验：常见被要求的补充项有中国居民身份证正反面扫描、旅行计划说明（大致日期地点即可，订单非必需）等；一切以你自己的清单为准。",
           ],
-          sourceIds: ["apply", "piaodi-ca"],
+          sourceIds: ["apply"],
         },
       ],
     },
@@ -249,8 +249,8 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
             "第 1 步：打开下方「访客签证申请步骤」官方页，按页面当前指引选择在线申请入口（入口偶有调整，以官方页面为准）。",
             "路径 A · IRCC Portal：按页面指引创建 Portal 账号后，直接在系统里逐屏回答申请问题，由系统生成申请——这条路径不需要下载 IMM 5257 PDF。",
             "路径 B · IRCC secure account（GCKey）：注册或登录 GCKey 账户 → 回答资格问卷 → 系统生成个性化材料清单 → 按清单上传文件（通常含验证过条码的 IMM 5257）。",
-            "第三方经验（北美票帝）：持有效美签者多走 Portal 简化路径——按官方页指引先获取邀请码再注册 Portal 账号，全程在系统里答题（居住地选美国、绿卡与美签状态如实选）。",
-            "第三方经验（北美票帝）：GCKey 路径的资格问卷会生成 reference code（约 60 天有效）；注册时设置的密保问题务必记牢，之后每次登录都要回答。",
+            "第三方经验：持有效美签者多走 Portal 简化路径——按官方页指引先获取邀请码再注册 Portal 账号，全程在系统里答题（居住地选美国、绿卡与美签状态如实选）。",
+            "第三方经验：GCKey 路径的资格问卷会生成 reference code（约 60 天有效）；注册时设置的密保问题务必记牢，之后每次登录都要回答。",
             "注册账户只需邮箱和自设密保；官方系统不会通过邮件向你索要密码。",
           ],
           sourceIds: [
@@ -331,9 +331,8 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           description:
             "本站建议。提交前核对姓名、号码、日期与文件清晰度 / 方向；部分系统对单文件大小有限制，过大需压缩。",
           detailPoints: [
-            "第三方经验（北美票帝）：单文件超限时把扫描分辨率压到 96dpi 左右通常即可通过；以系统提示的格式与大小要求为准。",
+            "第三方经验：单文件超限时把扫描分辨率压到 96dpi 左右通常即可通过；以系统提示的格式与大小要求为准。",
           ],
-          sourceIds: ["piaodi-ca"],
         },
         {
           id: "declaration-read",
@@ -350,7 +349,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           detailPoints: [
             "第三方整理：在线缴费支持 Visa / MasterCard / Amex / JCB / 银联等主流信用卡，以支付页实际显示为准；自 2023-04 起申请费仅接受在线支付。",
           ],
-          sourceIds: ["fees", "piaodi-ca"],
+          sourceIds: ["fees"],
         },
         {
           id: "confirmation-saved",
@@ -417,10 +416,10 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           description:
             "官方要求。在美国一般到 USCIS ASC 采集（预约免费）；放号窗口有限，收到 BIL 后尽快预约。若无需采集，可标记不适用。",
           detailPoints: [
-            "第三方经验（北美票帝）：ASC 官方预约系统通常只放出约两周后的号，收到 BIL 当天就去约；部分城市的 VAC 也可采集。",
-            "第三方经验（北美票帝）：个别 ASC 有 walk-in（免预约）成功案例，但政策随时变、各点差异大，出发前看票帝实时反馈页并以现场为准。",
+            "第三方经验：ASC 官方预约系统通常只放出约两周后的号，收到 BIL 当天就去约；部分城市的 VAC 也可采集。",
+            "第三方经验：个别 ASC 有 walk-in（免预约）成功案例，但政策随时变、各点差异大，出发前多看近期社区反馈，并以现场为准。",
           ],
-          sourceIds: ["biometrics-where", "piaodi-asc-walkin"],
+          sourceIds: ["biometrics-where"],
           allowNotApplicable: true,
         },
         {
@@ -471,9 +470,9 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           description:
             "官方要求。审理期间通过账户与邮箱接收通知；处理时间为参考、不含生物信息与邮寄，不代表批准保证。",
           detailPoints: [
-            "第三方经验（北美票帝）：顺利案例从提交到收回护照约 2–3 周；「提交 → BIL」「采集 → 护照递交通知」各自从 1 天到 1 个月的波动都属正常，不代表申请出了问题。",
+            "第三方经验：顺利案例从提交到收回护照约 2–3 周；「提交 → BIL」「采集 → 护照递交通知」各自从 1 天到 1 个月的波动都属正常，不代表申请出了问题。",
           ],
-          sourceIds: ["processing-times", "piaodi-ca"],
+          sourceIds: ["processing-times"],
         },
         {
           id: "additional-request",
@@ -497,11 +496,11 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           description:
             "官方要求。递交护照原件 + PPR + 同意书 + 服务费 + 回邮安排；VFS 为 IRCC 授权第三方运营商，地址 / 费用 / 快递方式以其官网当前页面为准，勿按旧攻略准备。",
           detailPoints: [
-            "第三方经验（北美票帝）：递交通知信即 OPR（IMM 5740）；递交包通常为 OPR 信 + 护照原件 + 同意书 + 转运费 + 回邮安排。",
-            "第三方经验（北美票帝）：转运费用 money order / cashier's check 支付、抬头写 VFS Services (USA) Inc.，个人与公司支票都不收；金额以 VFS 当前页面为准。",
-            "第三方经验（北美票帝）：在 VAC 录过指纹并在同一 VAC 递交护照可免转运费；多人可合并寄送，但回邮 label 一人一份。",
+            "第三方经验：递交通知信即 OPR（IMM 5740）；递交包通常为 OPR 信 + 护照原件 + 同意书 + 转运费 + 回邮安排。",
+            "第三方经验：转运费用 money order / cashier's check 支付、抬头写 VFS Services (USA) Inc.，个人与公司支票都不收；金额以 VFS 当前页面为准。",
+            "第三方经验：在 VAC 录过指纹并在同一 VAC 递交护照可免转运费；多人可合并寄送，但回邮 label 一人一份。",
           ],
-          sourceIds: ["vfs-passport", "piaodi-ca"],
+          sourceIds: ["vfs-passport"],
         },
         {
           id: "vfs-track",
@@ -800,20 +799,6 @@ export function buildCaTrvFlow(identity: SupportedIdentityCode): FlowConfig {
         organization: USCIS,
         url: "https://www.uscis.gov/forms/filing-guidance/form-i-797-types-and-functions",
         lastVerified: "2026-07-07",
-      },
-      {
-        id: "piaodi-ca",
-        label: "在美国申请加拿大签证指南（第三方经验）",
-        organization: "北美票帝 piao.tips（第三方经验，非官方）",
-        url: "https://piao.tips/canada-visa-in-the-us/",
-        lastVerified: "2026-07-09",
-      },
-      {
-        id: "piaodi-asc-walkin",
-        label: "ASC 采集 walk-in 实时反馈（第三方经验）",
-        organization: "北美票帝 piao.tips（第三方经验，非官方）",
-        url: "https://piao.tips/canada-asc-walk-in",
-        lastVerified: "2026-07-09",
       },
     ],
     steps: buildSteps(variant),
