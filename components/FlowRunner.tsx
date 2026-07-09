@@ -54,18 +54,23 @@ export function FlowRunner({
   const currentIndex = flow.steps.findIndex((candidate) => candidate.id === step.id);
   const missingRequired = countMissingRequiredTasks(step, progress);
   const processingTimesSource = flow.sources.find(
-    (source) => source.id === "processing-times",
+    (source) => source.id === (flow.processingTimeSourceId ?? "processing-times"),
   );
 
   async function handleResetProgress() {
-    if (!window.confirm("确定清除这条流程在当前浏览器中的全部进度吗？")) return;
+    if (
+      !window.confirm(
+        "确定清除本站在当前浏览器保存的全部数据吗？（身份选择与所有国家的流程进度都会被删除）",
+      )
+    )
+      return;
     // 清除后 isIdentityValid 变为 false，由上方失效跳转 effect 统一回到 /start。
     await resetProgress();
   }
 
   if (!isLoaded || !isIdentityValid) {
     return (
-      <p className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">
+      <p className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-600 shadow-sm">
         正在加载你的申请流程……
       </p>
     );
@@ -74,18 +79,18 @@ export function FlowRunner({
   return (
     <div className="space-y-6">
       <FlowProgress
-        currentStep={currentIndex + 1}
-        totalSteps={flow.steps.length}
+        flow={flow}
+        currentStepIndex={currentIndex}
         completionPercentage={completionPercentage}
       />
 
       <header>
         <div className="flex flex-wrap gap-2 text-xs">
-          <span className="rounded-full bg-blue-100 px-3 py-1 text-blue-800">
+          <span className="rounded-full bg-blue-100 px-3 py-1 font-medium text-blue-800">
             {flow.statusLabel}
           </span>
           <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">
-            {flow.countryName} · {flow.visaType}
+            {flow.countryFlag} {flow.countryName} · {flow.visaType}
           </span>
         </div>
         <h1 className="mt-4 text-2xl font-semibold tracking-tight text-slate-950">
@@ -190,10 +195,10 @@ export function FlowRunner({
           </Link>
         ) : (
           <Link
-            href="/start"
+            href="/countries"
             className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-center text-sm font-medium text-slate-800 hover:bg-slate-50"
           >
-            ← 重新选择
+            ← 重选国家
           </Link>
         )}
         {nextSlug ? (
@@ -218,7 +223,7 @@ export function FlowRunner({
         onClick={handleResetProgress}
         className="text-xs text-slate-500 underline underline-offset-2 hover:text-red-700"
       >
-        清除当前浏览器中的流程进度
+        清除本站在此浏览器保存的全部数据
       </button>
     </div>
   );
