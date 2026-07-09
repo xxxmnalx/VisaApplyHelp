@@ -11,7 +11,6 @@ const KETA = "韩国法务部出入境管理局 K-ETA";
 const CBP = "美国海关与边境保护局（CBP）";
 const SEVP = "美国 SEVP / 国土安全部（DHS）";
 const USCIS = "美国公民及移民服务局（USCIS）";
-const PIAODI = "北美票帝 piao.tips（第三方经验，非官方）";
 
 /** 身份差异集中在这里：文案与在美身份证明材料按身份切换，其余步骤共享。 */
 type IdentityVariant = {
@@ -43,7 +42,7 @@ const identityVariants: Record<SupportedIdentityCode, IdentityVariant> = {
         kind: "recommended",
         description:
           "本站建议（第三方经验）。另备美签页与 I-94 复印件、在读证明更稳妥；旅费由父母资助的，可加父母资金证明与关系证明。",
-        sourceIds: ["cbp-i94", "piaodi-kr"],
+        sourceIds: ["cbp-i94"],
       },
     ],
   },
@@ -67,7 +66,7 @@ const identityVariants: Record<SupportedIdentityCode, IdentityVariant> = {
         kind: "recommended",
         description:
           "本站建议（第三方经验）。近 2–3 个月工资单与在职信可同时佐证身份与资金状况，备上更稳妥；美签贴纸过期但身份有效的情形无官方明文，建议先向管辖领馆确认。",
-        sourceIds: ["cbp-i94", "piaodi-kr"],
+        sourceIds: ["cbp-i94"],
       },
     ],
   },
@@ -120,7 +119,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
             "入境韩国前在第三国中转停留不得超过 3 天；3 年内曾被韩国拒绝入境或遣返者不适用。",
             "免签入境由边检最终裁量，没把握时建议改办 C-3-9 签证。",
           ],
-          sourceIds: ["transit-ny", "piaodi-kr-transit"],
+          sourceIds: ["transit-ny"],
         },
         {
           id: "us-status-eligible",
@@ -140,7 +139,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
             "第三方报道：2026-03-30 起韩国放宽对华多次签（5 年 / 10 年），但口径以中国境内居住地为准，在美申请能否适用官方未明确，需向管辖领馆确认。",
             "在美领区常见最高 5 年多次；实发次数 / 年限可能低于申请且费用不退差价。",
           ],
-          sourceIds: ["sf-c39", "visa-portal", "newsis-multi"],
+          sourceIds: ["sf-c39", "visa-portal"],
         },
       ],
     },
@@ -185,7 +184,6 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           kind: "conditional",
           description:
             "视情况（第三方经验）。洛杉矶总领馆自 2023 年 7 月起要求近 3 个月内显示领区内地址的文件（银行流水、水电账单等）；请勿因某馆「出签快」而跨领区递交。",
-          sourceIds: ["piaodi-kr"],
         },
       ],
     },
@@ -218,7 +216,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
             "旧金山总领馆（官方）：1 个月内开具的银行流水或 1 个月内工资单。",
             "第三方经验：波士顿有「最近 1 个月流水 + 余额 >$3,000」的 DP，方向一致但月数不同——一切按管辖领馆当前要求执行。",
           ],
-          sourceIds: ["ny-c39", "sf-c39", "piaodi-kr"],
+          sourceIds: ["ny-c39", "sf-c39"],
         },
         {
           id: "itinerary-docs",
@@ -226,7 +224,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           kind: "conditional",
           description:
             "视情况。旧金山官方明确要求往返机票行程单、酒店预订单或接待人声明；缺机票 / 酒店订单也是常见退件原因，建议无论哪个领区都备上（可用可免费取消的预订）。",
-          sourceIds: ["sf-c39", "piaodi-kr"],
+          sourceIds: ["sf-c39"],
         },
         {
           id: "mail-notarized",
@@ -289,7 +287,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           kind: "conditional",
           description:
             "视情况。亲递领馆普遍需预约：DC 大使馆只接受亲递且须在线预约；纽约需预约亲递；第三方经验称洛杉矶现场办理需提前约一周预约。",
-          sourceIds: ["embassy-guide", "ny-c39", "piaodi-kr"],
+          sourceIds: ["embassy-guide", "ny-c39"],
         },
       ],
     },
@@ -315,7 +313,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           kind: "conditional",
           description:
             "视情况。旧金山明确不允许第三方代交；亲递时护照通常当场核验后退回，无需长期离手（第三方经验：现场约 20 分钟受理）。",
-          sourceIds: ["embassy-guide", "sf-c39", "piaodi-kr"],
+          sourceIds: ["embassy-guide", "sf-c39"],
         },
         {
           id: "submit-by-mail",
@@ -331,7 +329,7 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           kind: "recommended",
           description:
             "本站建议。官方审理约 2–3 周且全线无加急，建议至少提前 4–6 周递交；但也不要早于出行前 3 个月（有领馆提示不受理过早申请，第三方经验记录）。",
-          sourceIds: ["embassy-guide", "piaodi-kr"],
+          sourceIds: ["embassy-guide"],
         },
       ],
     },
@@ -593,27 +591,6 @@ export function buildKrVisitorFlow(
         label: "I-797 批准通知说明",
         organization: USCIS,
         url: "https://www.uscis.gov/forms/filing-guidance/form-i-797-types-and-functions",
-        lastVerified: "2026-07-07",
-      },
-      {
-        id: "piaodi-kr",
-        label: "在美国办理韩国旅游签证指南（第三方经验）",
-        organization: PIAODI,
-        url: "https://piao.tips/korean-visa-in-the-us/",
-        lastVerified: "2026-07-07",
-      },
-      {
-        id: "newsis-multi",
-        label: "对华 5 年 / 10 年多次签放宽报道（第三方报道，非官方）",
-        organization: "Newsis（韩国媒体，非官方）",
-        url: "https://www.newsis.com/view/NISX20260618_0003673934",
-        lastVerified: "2026-07-07",
-      },
-      {
-        id: "piaodi-kr-transit",
-        label: "韩国转机 / 过境免签解读（第三方经验）",
-        organization: PIAODI,
-        url: "https://piao.tips/south_korea_transfer_guide/",
         lastVerified: "2026-07-07",
       },
     ],
