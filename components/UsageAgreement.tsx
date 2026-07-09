@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { IDENTITY_GATE_CONDITIONS } from "@/config/identities";
 
 type UsageAgreementProps = {
   onAgree: () => void;
@@ -33,25 +34,24 @@ const points: Array<{ title: string; body: string }> = [
   },
 ];
 
+/** 使用须知必读门：一次阅读、一次勾选（含硬性适用条件），之后信任信号转为小而常驻。 */
 export function UsageAgreement({ onAgree }: UsageAgreementProps) {
   const [agreed, setAgreed] = useState(false);
 
   return (
-    <div className="space-y-6">
+    <div className="mt-4 space-y-4">
       <section
         aria-labelledby="agreement-title"
-        className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm"
+        className="rounded-xl border border-line bg-white p-4 shadow-card sm:p-5"
       >
-        <h2 id="agreement-title" className="text-base font-semibold text-slate-950">
+        <h2 id="agreement-title" className="text-[15px] font-semibold text-ink">
           使用须知
         </h2>
         <dl className="mt-3 space-y-3">
           {points.map((point) => (
             <div key={point.title}>
-              <dt className="text-sm font-medium text-slate-900">
-                {point.title}
-              </dt>
-              <dd className="mt-0.5 text-sm leading-relaxed text-slate-600">
+              <dt className="text-[13px] font-medium text-ink">{point.title}</dt>
+              <dd className="mt-0.5 text-xs leading-relaxed text-ink-soft">
                 {point.body}
               </dd>
             </div>
@@ -59,23 +59,56 @@ export function UsageAgreement({ onAgree }: UsageAgreementProps) {
         </dl>
       </section>
 
-      <label className="flex cursor-pointer items-start gap-3 text-sm text-slate-800">
+      <section
+        aria-labelledby="conditions-title"
+        className="rounded-xl border border-line bg-white p-4 shadow-card sm:p-5"
+      >
+        <h2 id="conditions-title" className="text-[15px] font-semibold text-ink">
+          适用条件
+        </h2>
+        <ul className="mt-3 space-y-2">
+          {IDENTITY_GATE_CONDITIONS.map((condition) => (
+            <li
+              key={condition.id}
+              className="flex items-start gap-2 text-[13px] text-ink"
+            >
+              <span aria-hidden className="mt-1.5 h-1.5 w-1.5 flex-none rounded-full bg-pine" />
+              <span>{condition.label}</span>
+            </li>
+          ))}
+        </ul>
+        <details className="mt-3 border-t border-line-faint pt-3">
+          <summary className="cursor-pointer text-xs font-medium text-pine hover:text-pine-deep">
+            有条件不符合？
+          </summary>
+          <ul className="mt-2 space-y-2.5">
+            {IDENTITY_GATE_CONDITIONS.map((condition) => (
+              <li key={condition.id} className="text-xs leading-relaxed">
+                <p className="font-medium text-ink">{condition.label}</p>
+                <p className="mt-0.5 text-ink-soft">{condition.unsupportedHint}</p>
+              </li>
+            ))}
+          </ul>
+        </details>
+      </section>
+
+      <label className="flex cursor-pointer items-start gap-3 px-0.5 text-[13px] leading-relaxed text-ink">
         <input
           type="checkbox"
           checked={agreed}
           onChange={(event) => setAgreed(event.target.checked)}
-          className="mt-0.5 h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+          className="mt-0.5 h-5 w-5 rounded border-node-box text-pine focus:ring-pine"
         />
-        <span>我已阅读并理解以上说明，并同意继续。</span>
+        <span>我已阅读并理解以上说明，确认符合适用条件，并同意继续。</span>
       </label>
 
       <button
         type="button"
         disabled={!agreed}
         onClick={onAgree}
-        className="w-full rounded-xl bg-blue-700 px-4 py-3 font-medium text-white shadow-sm transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+        className="w-full rounded-lg bg-pine px-4 py-3 text-[14.5px] font-semibold text-white transition hover:bg-pine-deep disabled:cursor-not-allowed disabled:bg-node-track disabled:text-ink-mute"
       >
-        我同意，继续
+        我同意，开始使用
       </button>
     </div>
   );

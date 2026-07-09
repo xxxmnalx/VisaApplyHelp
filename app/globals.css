@@ -2,27 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 「路径感 · Wayfinding Calm」：纸面底色 + CJK 字体栈，无渐变、无第二强调色。 */
 :root {
-  --background: #f6f8fc;
-  --foreground: #0f172a;
+  --background: #f6f5f1;
+  --foreground: #1d2521;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  background-image:
-    radial-gradient(60rem 32rem at 85% -8rem, rgba(59, 130, 246, 0.07), transparent),
-    radial-gradient(48rem 26rem at -10% 12rem, rgba(14, 165, 233, 0.05), transparent);
-  background-attachment: fixed;
   font-family:
-    var(--font-geist-sans),
+    "Noto Sans SC",
     "PingFang SC",
     "Hiragino Sans GB",
     "Microsoft YaHei",
-    "Noto Sans SC",
-    Arial,
-    Helvetica,
+    system-ui,
     sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -37,8 +33,13 @@ textarea {
 }
 
 ::selection {
-  background: #bfdbfe;
-  color: #172554;
+  background: #e7f0ec;
+  color: #0e4237;
+}
+
+:focus-visible {
+  outline: 2px solid #16594b;
+  outline-offset: 2px;
 }
 
 /* 里程碑进度条等横向滚动容器的细滚动条。 */
@@ -47,6 +48,6 @@ textarea {
 }
 
 .overflow-x-auto::-webkit-scrollbar-thumb {
-  background: #e2e8f0;
+  background: #e3e2da;
   border-radius: 9999px;
 }

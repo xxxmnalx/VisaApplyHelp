@@ -1,29 +1,29 @@
 import Link from "next/link";
+import { BrandMark } from "@/components/BrandMark";
 
+/** 站点页头（首页与说明页使用；入口页与流程页自带页面级页头）。 */
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/85 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3.5">
+    <header className="sticky top-0 z-20 border-b border-line-soft bg-white">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3.5 sm:px-6">
         <Link
           href="/"
-          className="flex items-center gap-2 font-semibold tracking-tight text-slate-950"
+          className="flex items-center gap-2 text-sm font-bold tracking-tight text-ink no-underline hover:no-underline"
         >
-          <span
-            aria-hidden
-            className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-sky-500 text-sm text-white"
-          >
-            ✈
-          </span>
+          <BrandMark size={20} />
           签证步骤助手
         </Link>
         <nav aria-label="主导航" className="flex items-center gap-4 text-sm">
           <Link
             href="/start"
-            className="rounded-lg bg-blue-700 px-3 py-1.5 font-medium text-white transition hover:bg-blue-800"
+            className="font-semibold text-pine no-underline hover:text-pine-deep hover:no-underline"
           >
-            开始申请
+            开始申请 →
           </Link>
-          <Link href="/about" className="text-slate-600 hover:text-slate-950">
+          <Link
+            href="/about"
+            className="text-ink-soft no-underline hover:text-ink hover:no-underline"
+          >
             关于
           </Link>
         </nav>

@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
+import { averageEtaLabel } from "@/lib/domain/eta";
 import { listFlows } from "@/lib/flows";
 import type { FlowConfig } from "@/lib/flow-types";
 
@@ -8,6 +11,7 @@ type CountryCard = {
   countryName: string;
   visaType: string;
   stepsCount: number;
+  etaLabel: string | null;
   statusLabels: string[];
   lastVerified: string;
 };
@@ -30,6 +34,7 @@ function collectCountryCards(flows: FlowConfig[]): CountryCard[] {
         countryName: flow.countryName,
         visaType: flow.visaType,
         stepsCount: flow.steps.length,
+        etaLabel: averageEtaLabel(flow.etaStages),
         statusLabels: [flow.statusLabel],
         lastVerified: flow.lastVerified,
       });
@@ -49,93 +54,98 @@ export default function HomePage() {
   const countryCards = collectCountryCards(listFlows());
 
   return (
-    <main>
-      <section className="border-b border-slate-200/70 bg-gradient-to-b from-blue-50/80 via-white to-white">
-        <div className="mx-auto max-w-5xl px-4 py-14 sm:py-20">
-          <p className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-800">
-            已覆盖 {countryCards.length} 个国家 · F-1 与 H-1B 身份
-          </p>
-          <h1 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl sm:leading-[1.15]">
-            不只是看攻略，
-            <br />
-            <span className="bg-gradient-to-r from-blue-700 to-sky-500 bg-clip-text text-transparent">
-              一步一步完成签证申请。
-            </span>
-          </h1>
-          <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-            面向在美中国护照持有人：先确认你的美国身份，再选择要申请的国家，获得对应的材料
-            Checklist、官方入口和全程可见的流程节点。本站不接收申请材料，也不代替政府系统。
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/start"
-              className="rounded-xl bg-blue-700 px-6 py-3.5 text-center font-medium text-white shadow-md shadow-blue-700/20 transition hover:bg-blue-800 hover:shadow-lg"
-            >
-              确认身份并开始 →
-            </Link>
-            <Link
-              href="/about"
-              className="rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-center font-medium text-slate-800 transition hover:bg-slate-50"
-            >
-              了解本站怎么运作
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-5xl px-4 py-12">
-        <h2 className="text-xl font-semibold text-slate-950">可申请的国家</h2>
-        <p className="mt-1 text-sm text-slate-500">
-          确认身份后即可进入对应流程；费用与要求以官方页面为准。
-        </p>
-        <div className="mt-5 grid gap-4 sm:grid-cols-3">
-          {countryCards.map((card) => (
-            <article
-              key={card.countrySlug}
-              className="flex flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition hover:border-blue-300 hover:shadow-md"
-            >
-              <span aria-hidden className="text-3xl">
-                {card.countryFlag}
-              </span>
-              <h3 className="mt-3 font-semibold text-slate-950">
-                {card.countryName}
-              </h3>
-              <p className="mt-1 text-sm text-slate-600">{card.visaType}</p>
-              <p className="mt-3 text-xs leading-relaxed text-slate-500">
-                {card.stepsCount} 个步骤 · 适用 {card.statusLabels.join(" / ")}
-              </p>
-              <p className="mt-1 text-xs text-slate-400">
-                最近核验 {card.lastVerified}
-              </p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-t border-slate-200/70 bg-white/60">
-        <div className="mx-auto max-w-5xl px-4 py-12">
-          <h2 className="text-xl font-semibold text-slate-950">怎么用</h2>
-          <div className="mt-5 grid gap-4 sm:grid-cols-4">
-            {howItWorks.map(([number, title, description]) => (
-              <article
-                key={number}
-                className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm"
+    <>
+      <SiteHeader />
+      <main className="flex-1">
+        <section className="border-b border-line-soft bg-white">
+          <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 sm:py-20">
+            <p className="inline-flex items-center gap-1.5 rounded-full border border-pine-edge bg-pine-tint px-3 py-1 text-xs font-medium text-pine">
+              已覆盖 {countryCards.length} 个国家 · F-1 与 H-1B 身份
+            </p>
+            <h1 className="mt-4 max-w-3xl text-3xl font-semibold tracking-tight text-ink sm:text-5xl sm:leading-[1.15]">
+              不只是看攻略，
+              <br />
+              <span className="text-pine">一步一步完成签证申请。</span>
+            </h1>
+            <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-soft sm:text-lg">
+              面向在美中国护照持有人：先确认你的美国身份，再选择要申请的国家，获得对应的材料
+              Checklist、官方入口和全程可见的流程节点。本站不接收申请材料，也不代替政府系统。
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/start"
+                className="rounded-lg bg-pine px-6 py-3.5 text-center font-semibold text-white no-underline transition hover:bg-pine-deep hover:no-underline"
               >
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold text-blue-700">
-                  {number}
+                确认身份并开始 →
+              </Link>
+              <Link
+                href="/about"
+                className="rounded-lg border border-line bg-white px-6 py-3.5 text-center font-medium text-ink no-underline transition hover:border-node-box hover:no-underline"
+              >
+                了解本站怎么运作
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+          <h2 className="text-xl font-semibold text-ink">可申请的国家</h2>
+          <p className="mt-1 text-sm text-ink-mute">
+            确认身份后即可进入对应流程；费用与要求以官方页面为准。
+          </p>
+          <div className="mt-5 grid gap-3.5 sm:grid-cols-3">
+            {countryCards.map((card) => (
+              <article
+                key={card.countrySlug}
+                className="flex flex-col rounded-xl border border-line bg-white p-5 shadow-card transition hover:border-node-box"
+              >
+                <span aria-hidden className="text-3xl">
+                  {card.countryFlag}
                 </span>
-                <h3 className="mt-3 font-semibold text-slate-950">{title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                  {description}
+                <h3 className="mt-3 font-semibold text-ink">
+                  {card.countryName}
+                </h3>
+                <p className="mt-1 text-sm text-ink-soft">{card.visaType}</p>
+                <p className="mt-3 text-xs leading-relaxed text-ink-mute">
+                  共 <span className="font-mono text-ink">{card.stepsCount}</span>{" "}
+                  步{card.etaLabel ? <> · 平均{card.etaLabel}</> : null} · 适用{" "}
+                  {card.statusLabels.join(" / ")}
+                </p>
+                <p className="mt-1 text-xs text-ink-faint">
+                  最近核验{" "}
+                  <span className="font-mono">{card.lastVerified}</span>
                 </p>
               </article>
             ))}
           </div>
-          <p className="mt-8 rounded-2xl border border-slate-200/80 bg-slate-50 p-4 text-xs leading-relaxed text-slate-500">
-            隐私底线：进度只保存在你当前的浏览器；不收集护照号、申请号、出生日期或任何申请材料。关键要求均标注官方来源与最近核验日期。
-          </p>
-        </div>
-      </section>
-    </main>
+        </section>
+
+        <section className="border-t border-line-soft bg-white">
+          <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+            <h2 className="text-xl font-semibold text-ink">怎么用</h2>
+            <div className="mt-5 grid gap-3.5 sm:grid-cols-4">
+              {howItWorks.map(([number, title, description]) => (
+                <article
+                  key={number}
+                  className="rounded-xl border border-line bg-white p-5 shadow-card"
+                >
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-pine-tint font-mono text-sm font-semibold text-pine">
+                    {number}
+                  </span>
+                  <h3 className="mt-3 font-semibold text-ink">{title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                    {description}
+                  </p>
+                </article>
+              ))}
+            </div>
+            <p className="mt-8 rounded-xl border border-line bg-paper-bright p-4 text-xs leading-relaxed text-ink-mute">
+              隐私底线：进度只保存在你当前的浏览器；不收集护照号、申请号、出生日期或任何申请材料。关键要求均标注官方来源与最近核验日期。
+            </p>
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </>
   );
 }

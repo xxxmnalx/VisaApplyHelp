@@ -12,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ? new Date(latestVerified)
     : new Date();
 
-  const staticPages = ["", "/start", "/countries", "/about", "/privacy"].map(
+  const staticPages = ["", "/start", "/about", "/privacy"].map(
     (path) => ({
       url: `${baseUrl}${path}`,
       lastModified: staticLastModified,

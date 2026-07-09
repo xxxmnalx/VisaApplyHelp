@@ -52,7 +52,7 @@ export default function FlowStepPage({ params }: FlowStepPageProps) {
   const adjacent = getAdjacentSteps(flow, step);
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8 sm:py-12">
+    <main className="pb-8">
       <FlowRunner
         flow={flow}
         step={step}

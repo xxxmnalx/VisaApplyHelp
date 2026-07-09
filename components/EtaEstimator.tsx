@@ -15,6 +15,7 @@ const basisLabels = {
   experience: "经验",
 } as const;
 
+/** 拿签 ETA 估算：嵌在当前步卡内的一节；估算非保证，官方处理段以当日官方工具为准。 */
 export function EtaEstimator({
   stages,
   submitDate,
@@ -26,15 +27,15 @@ export function EtaEstimator({
   return (
     <section
       aria-labelledby="eta-title"
-      className="rounded-xl border border-emerald-200 bg-emerald-50 p-4"
+      className="border-b border-line-faint p-3.5 sm:p-5"
     >
-      <h2 id="eta-title" className="text-sm font-semibold text-emerald-950">
+      <h2 id="eta-title" className="text-[13px] font-semibold text-ink">
         大致拿签时间（估算）
       </h2>
 
       <label
         htmlFor="eta-submit-date"
-        className="mt-3 block text-xs font-medium text-emerald-900"
+        className="mt-2.5 block text-xs font-medium text-ink-soft"
       >
         计划在线提交日期
       </label>
@@ -43,46 +44,54 @@ export function EtaEstimator({
         type="date"
         value={submitDate}
         onChange={(event) => onChangeDate(event.target.value)}
-        className="mt-1 w-full rounded-lg border border-emerald-200 bg-white px-3 py-2 text-sm text-slate-950"
+        className="mt-1 w-full rounded-lg border border-line bg-white px-3 py-2 font-mono text-sm text-ink"
       />
 
       {estimate ? (
-        <p className="mt-3 text-sm leading-relaxed text-emerald-950">
-          若在 <span className="font-medium">{estimate.submitDate}</span> 提交，预计约在{" "}
-          <span className="font-medium">{estimate.minDate}</span> 至{" "}
-          <span className="font-medium">{estimate.maxDate}</span> 之间拿到签证（约{" "}
-          {estimate.totalMinDays}–{estimate.totalMaxDays} 天）。
+        <p className="mt-2.5 text-[13px] leading-relaxed text-ink">
+          若在 <span className="font-mono">{estimate.submitDate}</span>{" "}
+          提交，预计约在{" "}
+          <span className="font-mono font-semibold">{estimate.minDate}</span> 至{" "}
+          <span className="font-mono font-semibold">{estimate.maxDate}</span>{" "}
+          之间拿到签证（约{" "}
+          <span className="font-mono">
+            {estimate.totalMinDays}–{estimate.totalMaxDays}
+          </span>{" "}
+          天）。
         </p>
       ) : (
-        <p className="mt-3 text-sm text-emerald-900">请选择一个有效日期以查看估算。</p>
+        <p className="mt-2.5 text-[13px] text-ink-soft">
+          请选择一个有效日期以查看估算。
+        </p>
       )}
 
       {estimate ? (
-        <ul className="mt-3 space-y-2">
+        <ul className="mt-2.5 space-y-2">
           {estimate.stages.map((stage) => (
-            <li
-              key={stage.id}
-              className="rounded-lg border border-emerald-200 bg-white p-3 text-xs"
-            >
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="font-medium text-slate-900">{stage.label}</span>
-                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-800">
+            <li key={stage.id} className="text-xs leading-relaxed">
+              <span className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full border border-line bg-paper px-2 py-0.5 text-[10.5px] leading-none text-ink-mute">
                   {basisLabels[stage.basis]}
                 </span>
-                <span className="text-slate-500">
+                <span className="font-medium text-ink">{stage.label}</span>
+                <span className="font-mono text-ink-mute">
                   约 {stage.minDays}–{stage.maxDays} 天
                 </span>
-              </div>
+              </span>
               {stage.note ? (
-                <p className="mt-1 leading-relaxed text-slate-500">{stage.note}</p>
+                <span className="mt-0.5 block pl-0.5 text-[11px] text-ink-faint">
+                  {stage.note}
+                </span>
               ) : null}
             </li>
           ))}
         </ul>
       ) : null}
 
-      <p className="mt-3 text-xs leading-relaxed text-emerald-900">
-        仅为估算、非保证、非最长上限。官方处理时间通常只覆盖审理本身，<strong>不含</strong>补件、预约、邮寄等环节；实际以官方页面当日显示为准。
+      <p className="mt-2.5 text-[11px] leading-relaxed text-ink-mute">
+        仅为估算、非保证、非最长上限。官方处理时间通常只覆盖审理本身，
+        <strong>不含</strong>
+        补件、预约、邮寄等环节；实际以官方页面当日显示为准。
       </p>
 
       {processingTimesSource ? (
@@ -90,7 +99,7 @@ export function EtaEstimator({
           href={processingTimesSource.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-2 inline-flex min-h-[44px] items-center text-xs font-medium text-emerald-800 underline underline-offset-2 hover:text-emerald-950"
+          className="mt-1.5 inline-flex min-h-[44px] items-center text-xs font-medium text-pine underline underline-offset-2 hover:text-pine-deep"
         >
           查询官方处理时间（{processingTimesSource.organization}）↗
           <span className="sr-only">（在新标签页打开）</span>

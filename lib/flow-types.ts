@@ -25,6 +25,21 @@ export type TimelineEvent = {
   description: string;
 };
 
+/**
+ * 步骤上「有期限的事实」：琥珀 chip 常驻陈述期限，不倒数、不闪烁。
+ * 只写官方核验过的期限；数字未经核验时 chip 用「限期」类措辞、期限细节放 note。
+ */
+export type StepDeadline = {
+  /** 节点与列表上的短标签（如「限 30 天」）。 */
+  chip: string;
+  /** 期限的一句完整说明。 */
+  note: string;
+  /** 录入哪个时间线日期后可推算到期日（可选）。 */
+  eventId?: string;
+  /** 自 eventId 日期起的官方期限天数（可选，仅限已核验数字）。 */
+  days?: number;
+};
+
 export type FlowStep = {
   id: string;
   slug: string;
@@ -40,6 +55,8 @@ export type FlowStep = {
   showSummaryPanel?: boolean;
   /** 该步骤顶部渲染拿签 ETA 估算器。 */
   showEtaEstimator?: boolean;
+  /** 该步骤存在官方期限时的死线信息（里程碑琥珀 chip + 说明）。 */
+  deadline?: StepDeadline;
 };
 
 export type OfficialSource = {
