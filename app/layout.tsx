@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s｜签证步骤助手",
   },
   description:
-    "面向在美中国护照持有者的第三国签证逐步申请助手。0.1 版本支持 F-1 学生申请加拿大访客签证。",
+    "面向在美中国护照持有者的第三国签证逐步申请助手。支持 F-1 与 H-1B 身份申请加拿大、日本、韩国签证。",
   openGraph: {
     type: "website",
     locale: "zh_CN",
