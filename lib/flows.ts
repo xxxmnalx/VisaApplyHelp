@@ -92,6 +92,17 @@ export function getTaskSources(
   return flow.sources.filter((source) => ids.has(source.id));
 }
 
+/**
+ * 机构短名：优先取全称括号内的拉丁缩写（「加拿大移民、难民及公民部（IRCC）」→ IRCC），
+ * 否则去掉括号注释取前缀（「VFS Global（IRCC 授权服务商，非政府机构）」→ VFS Global）。
+ */
+export function getOrganizationShortName(organization: string): string {
+  const acronym = organization.match(/（([A-Za-z][A-Za-z0-9 .&/-]{0,14})）/);
+  if (acronym) return acronym[1];
+  const prefix = organization.split("（")[0].trim();
+  return prefix.length > 0 ? prefix : organization;
+}
+
 export function getAdjacentSteps(
   flow: FlowConfig,
   step: FlowStep,

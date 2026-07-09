@@ -2,24 +2,23 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { DeadlineChip } from "@/components/DeadlineChip";
+import { averageEtaLabel } from "@/lib/domain/eta";
 import type { FlowConfig } from "@/lib/flow-types";
 import { getStepPath } from "@/lib/flows";
 
 type FlowProgressProps = {
   flow: FlowConfig;
   currentStepIndex: number;
-  completionPercentage: number;
 };
 
 /**
- * 全程里程碑进度条：第一步就能看到从「了解流程」到「收到签证」的全部节点，
- * 已完成 / 当前 / 未到 三种状态，节点可点击跳转；移动端横向滚动并自动居中当前节点。
+ * 里程碑进度条（视觉签名）：第 1 步起全部节点可见——「地图已画好」。
+ * 完成 = 实心杉绿 + 勾；当前 = 放大 + 4px 浅绿环 + 标签加粗；未来 = 空心数字；
+ * 死线节点 = 琥珀 chip 常驻，不倒数。已完成节点可点回看，未来节点不可跳。
+ * 移动端横向滚动、当前节点自动居中；条下一行给出全程平均 ETA。
  */
-export function FlowProgress({
-  flow,
-  currentStepIndex,
-  completionPercentage,
-}: FlowProgressProps) {
+export function FlowProgress({ flow, currentStepIndex }: FlowProgressProps) {
   const trackRef = useRef<HTMLOListElement>(null);
   const currentRef = useRef<HTMLLIElement>(null);
 
@@ -38,14 +37,13 @@ export function FlowProgress({
       currentRect.width / 2;
   }, [currentStepIndex]);
 
+  const etaLabel = averageEtaLabel(flow.etaStages);
+
   return (
-    <section
-      aria-label="流程进度"
-      className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm"
-    >
+    <section aria-label="流程进度">
       <ol
         ref={trackRef}
-        className="flex items-start gap-0 overflow-x-auto pb-1 [scrollbar-width:thin]"
+        className="relative flex overflow-x-auto px-2 pb-1 [scrollbar-width:thin] sm:px-0"
       >
         {flow.steps.map((step, index) => {
           const state =
@@ -53,77 +51,106 @@ export function FlowProgress({
               ? "done"
               : index === currentStepIndex
                 ? "current"
-                : "todo";
+                : "future";
+
+          const dot = (
+            <span
+              aria-hidden
+              className={`flex flex-none items-center justify-center rounded-full font-semibold ${
+                state === "done"
+                  ? "h-[26px] w-[26px] bg-pine text-xs text-white"
+                  : state === "current"
+                    ? "h-[30px] w-[30px] bg-pine text-[13px] text-white ring-4 ring-pine-tint"
+                    : "h-[26px] w-[26px] border-[1.5px] border-node-edge bg-white text-xs text-ink-mute"
+              }`}
+            >
+              {state === "done" ? "✓" : index + 1}
+            </span>
+          );
+
+          const column = (
+            <>
+              <span aria-hidden className="flex items-center self-stretch">
+                <span
+                  className={`h-0.5 min-w-[6px] flex-1 ${
+                    index === 0
+                      ? "bg-transparent"
+                      : index <= currentStepIndex
+                        ? "bg-pine"
+                        : "bg-node-track"
+                  }`}
+                />
+                {dot}
+                <span
+                  className={`h-0.5 min-w-[6px] flex-1 ${
+                    index === flow.steps.length - 1
+                      ? "bg-transparent"
+                      : index < currentStepIndex
+                        ? "bg-pine"
+                        : "bg-node-track"
+                  }`}
+                />
+              </span>
+              <span
+                className={`mt-2 px-1 text-center leading-snug ${
+                  state === "current"
+                    ? "text-[11.5px] font-semibold text-ink"
+                    : state === "done"
+                      ? "text-[11px] text-ink-soft"
+                      : "text-[11px] text-ink-mute"
+                }`}
+              >
+                {step.milestone}
+              </span>
+              {step.deadline ? (
+                <span className="mt-1">
+                  <DeadlineChip label={step.deadline.chip} />
+                </span>
+              ) : null}
+              <span className="sr-only">
+                {state === "done"
+                  ? "（已完成，点击回看）"
+                  : state === "current"
+                    ? "（当前步骤）"
+                    : "（未开始）"}
+              </span>
+            </>
+          );
+
           return (
             <li
               key={step.id}
               ref={state === "current" ? currentRef : undefined}
-              className="flex shrink-0 items-start"
+              className="w-[92px] flex-none sm:w-auto sm:flex-1"
             >
-              {index > 0 ? (
-                <span
-                  aria-hidden
-                  className={`mt-[13px] h-0.5 w-4 sm:w-6 ${
-                    index <= currentStepIndex ? "bg-blue-600" : "bg-slate-200"
-                  }`}
-                />
-              ) : null}
-              <Link
-                href={getStepPath(flow, step.slug)}
-                aria-current={state === "current" ? "step" : undefined}
-                className="group flex w-14 flex-col items-center gap-1.5 sm:w-16"
-              >
-                <span
-                  aria-hidden
-                  className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition ${
-                    state === "done"
-                      ? "bg-blue-600 text-white"
-                      : state === "current"
-                        ? "bg-white text-blue-700 ring-2 ring-blue-600"
-                        : "bg-slate-100 text-slate-500 group-hover:bg-slate-200"
-                  }`}
+              {state === "future" ? (
+                <span className="flex flex-col items-center">{column}</span>
+              ) : (
+                <Link
+                  href={getStepPath(flow, step.slug)}
+                  aria-current={state === "current" ? "step" : undefined}
+                  className="flex flex-col items-center no-underline hover:no-underline"
                 >
-                  {state === "done" ? "✓" : index + 1}
-                </span>
-                <span
-                  className={`text-center text-[11px] leading-tight ${
-                    state === "current"
-                      ? "font-semibold text-blue-700"
-                      : state === "done"
-                        ? "text-slate-600"
-                        : "text-slate-500"
-                  }`}
-                >
-                  {step.milestone}
-                </span>
-                <span className="sr-only">
-                  {state === "done"
-                    ? "（已完成）"
-                    : state === "current"
-                      ? "（当前步骤）"
-                      : "（未开始）"}
-                </span>
-              </Link>
+                  {column}
+                </Link>
+              )}
             </li>
           );
         })}
       </ol>
 
-      <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-        <span>
-          第 {currentStepIndex + 1} / {flow.steps.length} 步
-        </span>
-        <span>
-          本站流程完成度 {completionPercentage}%
-          <span className="ml-1 text-[11px] text-slate-500">（仅统计必做项）</span>
-        </span>
-      </div>
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-blue-600 to-sky-500 transition-[width]"
-          style={{ width: `${completionPercentage}%` }}
-        />
-      </div>
+      <p className="px-4 pt-2.5 text-[11.5px] text-ink-mute sm:px-0 sm:text-center sm:text-xs">
+        第{" "}
+        <span className="font-mono text-ink">{currentStepIndex + 1}</span> /{" "}
+        <span className="font-mono">{flow.steps.length}</span> 步
+        {etaLabel ? (
+          <>
+            {" "}
+            · 全程平均<span className="font-mono text-ink">{etaLabel}</span>
+            ，按提交日估算，以官方当日审理进度为准
+          </>
+        ) : null}
+      </p>
     </section>
   );
 }

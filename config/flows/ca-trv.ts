@@ -303,6 +303,12 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
       milestone: "生物采集",
       summary: "查看是否需要采集；如需采集，按 BIL 期限在美预约并完成。",
       officialLinkIds: ["need-biometrics", "biometrics-where"],
+      deadline: {
+        chip: "限 30 天",
+        note: "收到 BIL 信后 30 天内完成采集；无法按时可通过官方网表申请延期",
+        eventId: "biometricsLetterReceivedAt",
+        days: 30,
+      },
       timelineEvents: [
         {
           id: "biometricsLetterReceivedAt",
@@ -367,6 +373,11 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
       milestone: "递签护照",
       summary: "继续查看账户；收到护照递交通知后，按 VFS 当前要求递交并跟踪。",
       officialLinkIds: ["after-apply", "vfs-passport", "processing-times"],
+      deadline: {
+        chip: "限期寄达",
+        note: "收到护照递交通知（PPR）后，须在通知标注的截止日期前寄达护照",
+        eventId: "passportRequestReceivedAt",
+      },
       timelineEvents: [
         {
           id: "passportRequestReceivedAt",
