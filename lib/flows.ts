@@ -1,4 +1,6 @@
-import { caTrvF1Flow } from "@/config/flows/ca-trv-f1";
+import { caTrvF1Flow, caTrvH1bFlow } from "@/config/flows/ca-trv";
+import { jpVisitorF1Flow, jpVisitorH1bFlow } from "@/config/flows/jp-evisa";
+import { krVisitorF1Flow, krVisitorH1bFlow } from "@/config/flows/kr-visitor";
 import type {
   FlowConfig,
   FlowStep,
@@ -6,7 +8,14 @@ import type {
   OfficialSource,
 } from "@/lib/flow-types";
 
-const flows: FlowConfig[] = [caTrvF1Flow];
+const flows: FlowConfig[] = [
+  caTrvF1Flow,
+  jpVisitorF1Flow,
+  krVisitorF1Flow,
+  caTrvH1bFlow,
+  jpVisitorH1bFlow,
+  krVisitorH1bFlow,
+];
 
 export function listFlows(): FlowConfig[] {
   return [...flows];
@@ -31,8 +40,9 @@ export function getFlowByRoute(
   );
 }
 
-export function getDefaultFlow(): FlowConfig {
-  return caTrvF1Flow;
+/** 某个身份可申请的全部国家流程（身份先行 → 国家选择页使用）。 */
+export function listFlowsForStatus(statusCode: string): FlowConfig[] {
+  return flows.filter((flow) => flow.status === statusCode);
 }
 
 export function getFlowPath(flow: FlowConfig): string {
