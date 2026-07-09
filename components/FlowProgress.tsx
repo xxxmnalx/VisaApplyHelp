@@ -70,7 +70,8 @@ export function FlowProgress({ flow, currentStepIndex }: FlowProgressProps) {
 
           const column = (
             <>
-              <span aria-hidden className="flex items-center self-stretch">
+              {/* 连接线行固定 30px 高：当前节点（30px）与普通节点（26px）共用同一中轴，线段不错位。 */}
+              <span aria-hidden className="flex h-[30px] items-center self-stretch">
                 <span
                   className={`h-0.5 min-w-[6px] flex-1 ${
                     index === 0
@@ -102,6 +103,11 @@ export function FlowProgress({ flow, currentStepIndex }: FlowProgressProps) {
               >
                 {step.milestone}
               </span>
+              {state === "current" ? (
+                <span className="mt-0.5 text-[10px] font-semibold text-pine">
+                  当前
+                </span>
+              ) : null}
               {step.deadline ? (
                 <span className="mt-1">
                   <DeadlineChip label={step.deadline.chip} />
