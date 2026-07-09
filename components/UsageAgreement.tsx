@@ -29,7 +29,7 @@ const points: Array<{ title: string; body: string }> = [
   },
   {
     title: "签证不等于入境",
-    body: "即使获签，最终是否入境由加拿大边境官员在口岸决定。",
+    body: "即使获签，最终是否入境由目的国边境官员在口岸决定。",
   },
 ];
 
@@ -40,7 +40,7 @@ export function UsageAgreement({ onAgree }: UsageAgreementProps) {
     <div className="space-y-6">
       <section
         aria-labelledby="agreement-title"
-        className="rounded-xl border border-slate-200 bg-white p-4"
+        className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm"
       >
         <h2 id="agreement-title" className="text-base font-semibold text-slate-950">
           使用须知
@@ -73,7 +73,7 @@ export function UsageAgreement({ onAgree }: UsageAgreementProps) {
         type="button"
         disabled={!agreed}
         onClick={onAgree}
-        className="w-full rounded-xl bg-blue-700 px-4 py-3 font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+        className="w-full rounded-xl bg-blue-700 px-4 py-3 font-medium text-white shadow-sm transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-300"
       >
         我同意，继续
       </button>

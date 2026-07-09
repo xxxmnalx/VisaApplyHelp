@@ -2,53 +2,58 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { FlowConfig } from "@/lib/flow-types";
-import { getStepPath } from "@/lib/flows";
-import { LocalFlowIdentityRepository } from "@/lib/repositories/local-flow-repository";
+import {
+  IDENTITY_GATE_CONDITIONS,
+  US_IDENTITY_OPTIONS,
+} from "@/config/identities";
+import { LocalUserIdentityRepository } from "@/lib/repositories/local-flow-repository";
 
 type IdentitySelectorProps = {
-  flow: FlowConfig;
   consentAcceptedAt: string;
+  /** 已保存过身份的回访用户，预选其上次的身份。 */
+  initialStatusCode?: string | null;
 };
 
 export function IdentitySelector({
-  flow,
   consentAcceptedAt,
+  initialStatusCode = null,
 }: IdentitySelectorProps) {
   const router = useRouter();
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  // null = 尚未选择；true = 符合全部；false = 有不符合，进入下钻
-  const [meetsAll, setMeetsAll] = useState<boolean | null>(null);
-  const [failingConditionId, setFailingConditionId] = useState<string | null>(
-    null,
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(
+    US_IDENTITY_OPTIONS.find(
+      (option) => option.code === initialStatusCode && option.supported,
+    )?.code ?? null,
   );
+  const [gateConfirmed, setGateConfirmed] = useState(
+    Boolean(initialStatusCode),
+  );
+  const [isSaving, setIsSaving] = useState(false);
 
-  const selectedChoice = flow.eligibilityChoices.find(
-    (choice) => choice.id === selectedStatus,
+  const selectedOption = US_IDENTITY_OPTIONS.find(
+    (option) => option.code === selectedStatus,
   );
-  const failingCondition = flow.eligibilityConditions.find(
-    (condition) => condition.id === failingConditionId,
-  );
-  const officialVisitorVisaSource =
-    flow.sources.find((source) => source.id === "visitor-overview") ??
-    flow.sources.find((source) => source.id === "apply");
-  const checkVisaSource = flow.sources.find(
-    (source) => source.id === "check-visa-eta",
-  );
-
   const canContinue =
-    Boolean(selectedChoice?.supported) && meetsAll === true;
+    Boolean(selectedOption?.supported) && gateConfirmed && !isSaving;
 
   async function handleContinue() {
     if (!canContinue || !selectedStatus) return;
-    const identityRepository = new LocalFlowIdentityRepository();
+    setIsSaving(true);
+    const identityRepository = new LocalUserIdentityRepository();
     await identityRepository.save({
-      flowId: flow.id,
-      selectedStatus,
+      statusCode: selectedStatus,
       savedAt: new Date().toISOString(),
       consentAcceptedAt,
     });
-    router.push(getStepPath(flow, flow.steps[0].slug));
+    // 浏览器禁用站点数据时保存会静默失败；回读校验，避免跳到国家页又被弹回。
+    const persisted = await identityRepository.load();
+    if (persisted?.statusCode !== selectedStatus) {
+      setIsSaving(false);
+      window.alert(
+        "你的浏览器禁用了本地存储（Cookie / 站点数据），本站无法保存身份与进度。请在浏览器设置中允许本站数据后重试。",
+      );
+      return;
+    }
+    router.push("/countries");
   }
 
   return (
@@ -57,29 +62,34 @@ export function IdentitySelector({
         <legend className="text-base font-semibold text-slate-950">
           1. 选择你当前的美国身份
         </legend>
+        <p className="mt-1 text-xs text-slate-500">
+          身份决定各国流程中的材料清单；确认后即可选择要申请的国家。
+        </p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
-          {flow.eligibilityChoices.map((choice) => (
+          {US_IDENTITY_OPTIONS.map((option) => (
             <label
-              key={choice.id}
-              className={`rounded-xl border p-4 ${
-                choice.supported
-                  ? "cursor-pointer border-slate-200 bg-white hover:border-blue-300"
-                  : "cursor-not-allowed border-slate-200 bg-slate-50 text-slate-400"
+              key={option.code}
+              className={`rounded-2xl border p-4 transition ${
+                option.supported
+                  ? selectedStatus === option.code
+                    ? "cursor-pointer border-blue-600 bg-blue-50/60 shadow-sm ring-1 ring-blue-600"
+                    : "cursor-pointer border-slate-200 bg-white shadow-sm hover:border-blue-300 hover:shadow"
+                  : "cursor-not-allowed border-dashed border-slate-200 bg-slate-50 text-slate-400"
               }`}
             >
               <span className="flex items-start gap-3">
                 <input
                   type="radio"
                   name="status"
-                  value={choice.id}
-                  disabled={!choice.supported}
-                  checked={selectedStatus === choice.id}
-                  onChange={() => setSelectedStatus(choice.id)}
+                  value={option.code}
+                  disabled={!option.supported}
+                  checked={selectedStatus === option.code}
+                  onChange={() => setSelectedStatus(option.code)}
                   className="mt-1 h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span>
-                  <span className="block font-medium">{choice.label}</span>
-                  <span className="mt-1 block text-xs">{choice.note}</span>
+                  <span className="block font-medium">{option.label}</span>
+                  <span className="mt-1 block text-xs">{option.note}</span>
                 </span>
               </span>
             </label>
@@ -87,125 +97,59 @@ export function IdentitySelector({
         </div>
       </fieldset>
 
-      {selectedChoice && !selectedChoice.supported ? (
-        <div className="rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
-          <p>
-            该身份尚未开放。我们保留了配置扩展能力，但不会让你误用 F-1 流程。
-          </p>
-          {officialVisitorVisaSource ? (
-            <a
-              href={officialVisitorVisaSource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-flex min-h-[44px] items-center font-medium text-amber-900 underline underline-offset-2 hover:text-amber-950"
-            >
-              前往加拿大官方访客签证页面（{officialVisitorVisaSource.organization}）↗
-              <span className="sr-only">（在新标签页打开）</span>
-            </a>
-          ) : null}
-        </div>
-      ) : null}
-
       <fieldset>
         <legend className="text-base font-semibold text-slate-950">
-          2. 确认以下条件
+          2. 确认适用条件
         </legend>
-        <p className="mt-1 text-xs text-slate-500">
-          本流程需要你同时符合以下全部条件：
-        </p>
-        <ul className="mt-3 space-y-2 rounded-xl border border-slate-200 bg-white p-4">
-          {flow.eligibilityConditions.map((condition) => (
-            <li
-              key={condition.id}
-              className="flex items-start gap-2 text-sm text-slate-800"
-            >
-              <span aria-hidden className="mt-0.5 text-slate-400">
-                •
-              </span>
-              <span>{condition.label}</span>
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-3 grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            aria-pressed={meetsAll === true}
-            onClick={() => {
-              setMeetsAll(true);
-              setFailingConditionId(null);
-            }}
-            className={`min-h-[44px] rounded-xl border px-4 py-3 text-sm font-medium transition ${
-              meetsAll === true
-                ? "border-blue-600 bg-blue-600 text-white"
-                : "border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
-            }`}
-          >
-            我符合以上全部
-          </button>
-          <button
-            type="button"
-            aria-pressed={meetsAll === false}
-            onClick={() => setMeetsAll(false)}
-            className={`min-h-[44px] rounded-xl border px-4 py-3 text-sm font-medium transition ${
-              meetsAll === false
-                ? "border-amber-500 bg-amber-500 text-white"
-                : "border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
-            }`}
-          >
-            有不符合的
-          </button>
-        </div>
-      </fieldset>
-
-      {meetsAll === false ? (
-        <div className="rounded-xl bg-amber-50 p-4">
-          <p className="text-sm font-medium text-amber-900">
-            选择不符合的那一项：
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {flow.eligibilityConditions.map((condition) => (
-              <button
+        <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <ul className="space-y-2">
+            {IDENTITY_GATE_CONDITIONS.map((condition) => (
+              <li
                 key={condition.id}
-                type="button"
-                aria-pressed={failingConditionId === condition.id}
-                onClick={() => setFailingConditionId(condition.id)}
-                className={`min-h-[44px] rounded-lg px-3 py-2 text-xs font-medium transition ${
-                  failingConditionId === condition.id
-                    ? "bg-amber-600 text-white"
-                    : "bg-white text-amber-900 hover:bg-amber-100"
-                }`}
+                className="flex items-start gap-2 text-sm text-slate-800"
               >
-                {condition.label}
-              </button>
+                <span aria-hidden className="mt-0.5 text-blue-500">
+                  •
+                </span>
+                <span>{condition.label}</span>
+              </li>
             ))}
-          </div>
-          {failingCondition ? (
-            <div className="mt-3 text-sm leading-relaxed text-amber-900">
-              <p>{failingCondition.unsupportedHint}</p>
-              {checkVisaSource ? (
-                <a
-                  href={checkVisaSource.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 inline-flex min-h-[44px] items-center font-medium underline underline-offset-2 hover:text-amber-950"
-                >
-                  用官方工具确认你需要的入境文件（{checkVisaSource.organization}）↗
-                  <span className="sr-only">（在新标签页打开）</span>
-                </a>
-              ) : null}
-            </div>
-          ) : null}
+          </ul>
+          <label className="mt-4 flex cursor-pointer items-start gap-3 border-t border-slate-100 pt-4 text-sm text-slate-800">
+            <input
+              type="checkbox"
+              checked={gateConfirmed}
+              onChange={(event) => setGateConfirmed(event.target.checked)}
+              className="mt-0.5 h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            />
+            <span>我符合以上全部条件。</span>
+          </label>
         </div>
-      ) : null}
+
+        <details className="mt-3 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
+          <summary className="cursor-pointer font-medium">
+            有条件不符合？
+          </summary>
+          <ul className="mt-3 space-y-3">
+            {IDENTITY_GATE_CONDITIONS.map((condition) => (
+              <li key={condition.id}>
+                <p className="font-medium">{condition.label}</p>
+                <p className="mt-0.5 leading-relaxed">
+                  {condition.unsupportedHint}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </details>
+      </fieldset>
 
       <button
         type="button"
         disabled={!canContinue}
         onClick={handleContinue}
-        className="w-full rounded-xl bg-blue-700 px-4 py-3 font-medium text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-300"
+        className="w-full rounded-xl bg-blue-700 px-4 py-3 font-medium text-white shadow-sm transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-300"
       >
-        加载我的申请流程
+        确认身份，去选择国家 →
       </button>
     </div>
   );
