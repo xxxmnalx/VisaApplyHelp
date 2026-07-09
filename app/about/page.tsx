@@ -39,6 +39,42 @@ export default function AboutPage() {
               签证政策、费用和签证申请中心要求可能变化。页面会标注官方来源与最近核验日期，实际操作必须以官方页面和用户收到的通知为准。
             </p>
           </section>
+          <section>
+            <h2 className="font-semibold text-ink">第三方经验的来源</h2>
+            <p className="mt-2">
+              流程中标注「第三方经验」的内容，主要来自华人社区多年持续更新、相互验证的公开分享；本站用自己的话重写并明确定性，它们是宝贵的操作参考，但不代表官方规则。主要参考来源：
+            </p>
+            <ul className="mt-2 space-y-1.5">
+              <li>
+                <a
+                  href="https://piao.tips/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-pine underline underline-offset-2 hover:text-pine-deep"
+                >
+                  北美票帝 piao.tips ↗
+                </a>
+                <span className="text-ink-mute">
+                  {" "}
+                  — 系统化整理的在美办签指南与实时反馈
+                </span>
+              </li>
+              <li>
+                <a
+                  href="https://www.1point3acres.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-pine underline underline-offset-2 hover:text-pine-deep"
+                >
+                  一亩三分地 1point3acres.com ↗
+                </a>
+                <span className="text-ink-mute">
+                  {" "}
+                  — 华人社区论坛，大量真实申请数据点（DP）
+                </span>
+              </li>
+            </ul>
+          </section>
         </div>
         <Link
           href="/start"
