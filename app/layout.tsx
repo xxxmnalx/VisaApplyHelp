@@ -1,19 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
-import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 import "./globals.css";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -38,6 +24,11 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+/**
+ * 根布局只负责字体与底色；页头页脚由各页面自带：
+ * 入口页与流程页使用设计系统的页面级 chrome（通告条 / 流程页头 / 隐私页脚），
+ * 首页与说明页显式引入 SiteHeader / SiteFooter。
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -45,14 +36,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
-      >
-        <div className="flex min-h-screen flex-col">
-          <SiteHeader />
-          <div className="flex-1">{children}</div>
-          <SiteFooter />
-        </div>
+      <body className="min-h-screen antialiased">
+        <div className="flex min-h-screen flex-col">{children}</div>
       </body>
     </html>
   );
