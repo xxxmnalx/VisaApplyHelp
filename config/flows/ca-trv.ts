@@ -509,6 +509,22 @@ export function buildCaTrvFlow(identity: SupportedIdentityCode): FlowConfig {
       "每人 CAD 100；家庭（5 人及以上同时申请）最高 CAD 500，以提交时 IRCC 费用页为准",
     biometricsFee:
       "每人 CAD 85；家庭（2 人及以上同时申请）最高 CAD 170。14–79 岁通常需采集，以 IRCC 页面为准",
+    feeItems: [
+      {
+        id: "application-fee",
+        label: "签证申请费",
+        amount: 100,
+        currency: "CAD",
+        note: "每人；家庭（5 人及以上同时申请）最高 CAD 500",
+      },
+      {
+        id: "biometrics-fee",
+        label: "生物信息费",
+        amount: 85,
+        currency: "CAD",
+        note: "每人；家庭（2 人及以上）最高 CAD 170；14–79 岁通常需采集，既往采集 10 年内有效者可能免缴",
+      },
+    ],
     etaStages: [
       {
         id: "submit-to-bil",

@@ -188,6 +188,7 @@ export function FlowRunner({
               <FlowOverviewPanel
                 officialFee={flow.officialFee}
                 biometricsFee={flow.biometricsFee}
+                feeItems={flow.feeItems}
                 lastVerified={flow.lastVerified}
                 processingTimesSource={processingTimesSource}
               />

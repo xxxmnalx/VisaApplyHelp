@@ -103,6 +103,20 @@ export type EtaStage = {
   note?: string;
 };
 
+/**
+ * 结构化费用分项：金额为官方核验值（随 flow.lastVerified），
+ * `approximate` 表示官方口径本身为「约」；上限、减免等口径差异写进 note。
+ */
+export type FeeItem = {
+  id: string;
+  label: string;
+  amount: number;
+  /** ISO 4217 货币码，如 CAD / JPY / USD。 */
+  currency: string;
+  approximate?: boolean;
+  note?: string;
+};
+
 export type FlowConfig = {
   id: string;
   version: string;
@@ -122,6 +136,8 @@ export type FlowConfig = {
   officialFee: string;
   /** 无生物信息采集环节的国家可省略。 */
   biometricsFee?: string;
+  /** 结构化费用分项（有则费用面板渲染分项 + 总计 + 美元参考换算）。 */
+  feeItems?: FeeItem[];
   etaStages: EtaStage[];
   processingTimeSourceId?: string;
   sources: OfficialSource[];
