@@ -19,6 +19,15 @@ function sanitizeTaskStates(value: unknown): Record<string, TaskState> {
   return result;
 }
 
+function sanitizeTimelineDates(value: unknown): Record<string, string> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  const result: Record<string, string> = {};
+  for (const [key, date] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof date === "string") result[key] = date;
+  }
+  return result;
+}
+
 export function createEmptyProgress(
   flow: FlowConfig,
   now = new Date().toISOString(),
@@ -61,10 +70,7 @@ export function normalizeProgress(
         ? candidate.currentStepId
         : flow.steps[0]?.id ?? "",
     taskStates: sanitizeTaskStates(candidate.taskStates),
-    timelineDates:
-      candidate.timelineDates && typeof candidate.timelineDates === "object"
-        ? candidate.timelineDates
-        : {},
+    timelineDates: sanitizeTimelineDates(candidate.timelineDates),
     revision:
       typeof candidate.revision === "number" && candidate.revision >= 0
         ? candidate.revision

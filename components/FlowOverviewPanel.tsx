@@ -2,7 +2,8 @@ import type { OfficialSource } from "@/lib/flow-types";
 
 type FlowOverviewPanelProps = {
   officialFee: string;
-  biometricsFee: string;
+  /** 无生物信息采集环节的国家不传。 */
+  biometricsFee?: string;
   lastVerified: string;
   processingTimesSource?: OfficialSource;
 };
@@ -31,12 +32,14 @@ export function FlowOverviewPanel({
             {officialFee}
           </dd>
         </div>
-        <div>
-          <dt className="text-xs font-medium text-slate-500">生物信息费</dt>
-          <dd className="mt-0.5 leading-relaxed text-slate-800">
-            {biometricsFee}
-          </dd>
-        </div>
+        {biometricsFee ? (
+          <div>
+            <dt className="text-xs font-medium text-slate-500">生物信息费</dt>
+            <dd className="mt-0.5 leading-relaxed text-slate-800">
+              {biometricsFee}
+            </dd>
+          </div>
+        ) : null}
         <div>
           <dt className="text-xs font-medium text-slate-500">
             本站用户时间线

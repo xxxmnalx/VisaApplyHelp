@@ -50,8 +50,8 @@ export function EtaEstimator({
         <p className="mt-3 text-sm leading-relaxed text-emerald-950">
           若在 <span className="font-medium">{estimate.submitDate}</span> 提交，预计约在{" "}
           <span className="font-medium">{estimate.minDate}</span> 至{" "}
-          <span className="font-medium">{estimate.maxDate}</span> 收到贴签护照（约{" "}
-          {estimate.totalMinDays}–{estimate.totalMaxDays} 天，常见约 3–6 周）。
+          <span className="font-medium">{estimate.maxDate}</span> 之间拿到签证（约{" "}
+          {estimate.totalMinDays}–{estimate.totalMaxDays} 天）。
         </p>
       ) : (
         <p className="mt-3 text-sm text-emerald-900">请选择一个有效日期以查看估算。</p>
@@ -82,7 +82,7 @@ export function EtaEstimator({
       ) : null}
 
       <p className="mt-3 text-xs leading-relaxed text-emerald-900">
-        仅为估算、非保证、非最长上限。官方处理时间只覆盖审批本身，<strong>不含</strong>生物信息采集与护照邮寄；实际以官方查询工具当日显示为准。
+        仅为估算、非保证、非最长上限。官方处理时间通常只覆盖审理本身，<strong>不含</strong>补件、预约、邮寄等环节；实际以官方页面当日显示为准。
       </p>
 
       {processingTimesSource ? (

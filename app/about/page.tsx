@@ -12,8 +12,8 @@ export default function AboutPage() {
       <h1 className="text-3xl font-semibold tracking-tight text-slate-950">关于本站</h1>
       <div className="mt-6 space-y-6 text-sm leading-7 text-slate-700">
         <p>
-          本站面向持中国护照、居住在美国的非移民身份用户，提供第三国签证的逐步申请流程。0.1
-          版本聚焦 F-1 在读学生申请加拿大访客签证。
+          本站面向持中国护照、居住在美国的非移民身份用户，提供第三国签证的逐步申请流程。当前支持
+          F-1 在读学生与 H-1B 工作身份申请加拿大、日本、韩国的短期签证。
         </p>
         <section>
           <h2 className="font-semibold text-slate-950">我们会做什么</h2>

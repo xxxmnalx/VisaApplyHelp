@@ -29,6 +29,8 @@ export type FlowStep = {
   id: string;
   slug: string;
   title: string;
+  /** 全程里程碑进度条上的节点短标签（2–4 字），第一步即可看到全部节点。 */
+  milestone: string;
   summary: string;
   tasks: FlowTask[];
   officialLinkIds?: string[];
@@ -48,14 +50,17 @@ export type OfficialSource = {
   lastVerified: string;
 };
 
-export type EligibilityChoice = {
-  id: string;
+/** 美国身份选项（身份确认页使用，与具体国家流程解耦）。 */
+export type UsIdentityOption = {
+  code: string;
+  slug: string;
   label: string;
-  supported: boolean;
+  shortLabel: string;
   note: string;
+  supported: boolean;
 };
 
-/** 身份门要求用户必须满足的单条适用条件（数据化以便两按钮下钻）。 */
+/** 身份确认页的硬性适用条件（决定能否使用本站流程，数据化以便下钻提示）。 */
 export type EligibilityCondition = {
   id: string;
   label: string;
@@ -87,6 +92,8 @@ export type FlowConfig = {
   countryCode: string;
   countrySlug: string;
   countryName: string;
+  /** 国家旗帜 emoji，用于国家选择卡片与流程标签。 */
+  countryFlag: string;
   visaType: string;
   visaTypeSlug: string;
   status: string;
@@ -96,9 +103,8 @@ export type FlowConfig = {
   nationality: Nationality;
   lastVerified: string;
   officialFee: string;
-  biometricsFee: string;
-  eligibilityChoices: EligibilityChoice[];
-  eligibilityConditions: EligibilityCondition[];
+  /** 无生物信息采集环节的国家可省略。 */
+  biometricsFee?: string;
   etaStages: EtaStage[];
   processingTimeSourceId?: string;
   sources: OfficialSource[];
@@ -125,10 +131,10 @@ export type FlowProgressState = {
   updatedAt: string;
 };
 
-export type FlowIdentitySelection = {
-  flowId: string;
-  selectedStatus: string;
+/** 全站唯一的身份选择记录（与具体国家流程解耦，先确认身份再选国家）。 */
+export type UserIdentitySelection = {
+  statusCode: string;
   savedAt: string;
   /** 用户已阅读并同意「使用须知」的时间（ISO）。未同意则不进入流程。 */
-  consentAcceptedAt?: string;
+  consentAcceptedAt: string;
 };
