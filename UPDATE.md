@@ -3,6 +3,32 @@
 > 所有 AI、自动化工具和新聊天线程在修改源码前必须先阅读本文件。  
 > 新记录按时间倒序添加，时间使用项目本地时区并包含时区缩写。
 
+## 2026-07-09 16:34:30 PDT
+
+### 修改范围（CA 流程吸收北美票帝社区经验，操作细节全面加密度）
+
+- 抓取票帝《在美国申请加拿大签证指南》全文（2026-07-09），按「第三方经验」定性写入 CA 流程 8 处，全部附原文来源链接：
+  - **IMM 5257 填表坑**（prepare / imm5257）：UCI 号（如有）在过往加签签证页右下角 Person 下方黑体数字；在美换发护照 Country of issue 填中国、Place of Issue 填换发城市；学生 Employment 写在读身份 + 学校名。
+  - **在线入口**（apply / official-entry）：持有效美签者多走 Portal 简化路径（先获取邀请码再注册，全程系统内答题，与官方 Portal 说明页交叉印证）；GCKey 路径 reference code 约 60 天有效、密保问题务必记牢。
+  - **补充材料**（prepare / extra-documents）：常见被要求中国居民身份证正反面、旅行计划说明（订单非必需）。
+  - **上传技巧**（submit / details-match）：单文件超限压到约 96dpi 通常可过。
+  - **缴费**（submit / fees-paid）：支持主流信用卡含银联；2023-04 起申请费仅在线支付。
+  - **采集预约**（biometrics / appointment-booked）：ASC 预约通常只放约两周后的号、收到 BIL 当天就约；部分 VAC 也可采集；walk-in 政策多变，新增票帝实时反馈页来源（piaodi-asc-walkin）。
+  - **递照细节**（decision / vfs-submit）：OPR 即 IMM 5740；转运费 money order / cashier's check、抬头 VFS Services (USA) Inc.、不收个人支票（金额不硬编码，以 VFS 当前页为准）；VAC 录指纹同点递交可免转运费；多人合寄但回邮 label 一人一份。
+  - **等待期心态**（decision / monitor-status）：顺利案例全程约 2–3 周，各阶段 1 天到 1 个月波动均属正常。
+- decision 步死线 note 补「（第三方经验：通常约 30 天）」，chip 维持「限期寄达」（官方未核验固定天数，以通知标注日期为准）。
+
+### 关键决定
+
+- 用户指出官方站反爬时应转向票帝 / 一亩三分地等多年社区验证的第三方源：采纳。票帝指南可直接抓取且系统化，作为本轮主源；一亩三分地正文在登录墙后、仅能取到片段预览，本轮不作为引用来源（后续可人工收集 DP）。
+- 所有社区来源信息一律「第三方经验（北美票帝）」前缀定性 + sourceIds 关联原文，不与官方要求混写；易变项（VAC 地址、转运费金额）仍不硬编码，只写相对稳定的操作要领（抬头、支付形式、免转运费条件）并指向 VFS 当前页。
+- Portal 简化路径的存在同时经官方 portal-application-process 页与票帝交叉印证后才写入。
+
+### 验证
+
+- `npx tsc --noEmit`、`npm run lint`、`npm run build` 全部通过。
+- 走查（dev server）：biometrics 步「预约采集点」展开可见两条票帝经验 + walk-in 反馈页链接（与 IRCC 官方来源并列、定性清晰）；「后程期限」卡第 6 步 note 显示 PPR / OPR 与第三方经验口径。
+
 ## 2026-07-09 16:24:53 PDT
 
 ### 修改范围（CA 流程 IMM 5257 教学内容 + 里程碑条错位修复）
