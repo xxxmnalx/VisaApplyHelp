@@ -2,9 +2,15 @@
 
 import Link from "next/link";
 import { VerifiedChip } from "@/components/VerifiedChip";
-import { averageEtaLabel } from "@/lib/domain/eta";
+import { averageEtaLabel, estimateEta, todayDateOnly } from "@/lib/domain/eta";
 import type { FlowConfig } from "@/lib/flow-types";
 import { getStepPath } from "@/lib/flows";
+
+/** yyyy-mm-dd → 「yyyy 年 m 月 d 日」。 */
+function formatZhDate(iso: string): string {
+  const [year, month, day] = iso.split("-").map(Number);
+  return `${year} 年 ${month} 月 ${day} 日`;
+}
 
 /** 某条流程的断点信息（存在真实进度时）。 */
 export type CountryResume = {
@@ -31,6 +37,8 @@ export function CountrySelector({
       {flows.map((flow) => {
         const resume = resumeByFlowId[flow.id];
         const etaLabel = averageEtaLabel(flow.etaStages);
+        // 「预计 X 日前拿到」：按今天开始、叠加各阶段最长天数的估算，非保证。
+        const etaByDate = estimateEta(todayDateOnly(), flow.etaStages)?.maxDate;
         const targetPath = getStepPath(
           flow,
           resume?.stepSlug ?? flow.steps[0].slug,
@@ -41,6 +49,15 @@ export function CountrySelector({
             {etaLabel ? <> · 平均{etaLabel}</> : null}
           </>
         );
+        const etaDateLine = etaByDate ? (
+          <span className="mt-0.5 block text-xs text-ink-soft">
+            现在开始，预计{" "}
+            <span className="whitespace-nowrap font-mono text-ink">
+              {formatZhDate(etaByDate)}
+            </span>
+            <span className="whitespace-nowrap">前拿到（估算）</span>
+          </span>
+        ) : null;
 
         if (!resume) {
           return (
@@ -63,6 +80,7 @@ export function CountrySelector({
                   {meta} · 核验于{" "}
                   <span className="font-mono">{flow.lastVerified}</span>
                 </span>
+                {etaDateLine}
               </span>
               <span aria-hidden className="text-base text-ink-faint">
                 ›

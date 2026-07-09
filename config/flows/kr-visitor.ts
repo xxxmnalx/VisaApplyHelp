@@ -466,6 +466,15 @@ export function buildKrVisitorFlow(
     lastVerified: "2026-07-07",
     officialFee:
       "90 天以内单次 USD 40；两次 USD 70、多次 USD 90（91 天以上单次 USD 60）。中国籍按标准费率、无减免；支付方式与 money order 抬头以管辖领馆公示为准",
+    feeItems: [
+      {
+        id: "visa-fee",
+        label: "签证费（90 天以内单次）",
+        amount: 40,
+        currency: "USD",
+        note: "两次 USD 70、多次 USD 90，91 天以上单次 USD 60；中国籍按标准费率、无减免；支付方式与 money order 抬头以管辖领馆公示为准",
+      },
+    ],
     etaStages: [
       {
         id: "review",

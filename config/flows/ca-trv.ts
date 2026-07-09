@@ -151,8 +151,8 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
       title: "准备信息与材料",
       milestone: "准备材料",
       summary:
-        "提前整理官方会问的信息并备齐材料；最终以 IRCC Portal 个性化清单为准。",
-      officialLinkIds: ["apply"],
+        "提前整理官方会问的信息、备齐材料，并认识主申请表 IMM 5257；最终以系统生成的个性化清单为准。",
+      officialLinkIds: ["apply", "imm5257-form"],
       tasks: [
         {
           id: "prep-passport-identity",
@@ -176,6 +176,21 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
           description:
             "官方要求。清晰彩色扫描护照资料页及有签注 / 印章页；常见遗漏是漏传旧签注页。最终以 Portal 个性化清单为准。",
           sourceIds: ["apply"],
+        },
+        {
+          id: "imm5257",
+          title: "认识主申请表 IMM 5257（按申请路径决定是否要填）",
+          kind: "conditional",
+          description:
+            "视情况。走 IRCC secure account（GCKey）或纸质路径需要下载填写 IMM 5257 主表并验证条码；走 IRCC Portal 则直接在系统里答题、不用这个 PDF。展开看逐步要点。",
+          detailPoints: [
+            "下载入口：只用下方 IRCC 官方表格页的版本（2026-07 核验时为 2023-09 版，背景与声明问题已并入主表、无单独 Schedule 1），不要用第三方网站的模板。",
+            "打开方式：先把 PDF 下载到电脑，再用 Adobe Acrobat Reader（版本 10 及以上）打开；直接在浏览器或系统预览里打开会填不了、也验证不了。",
+            "填写：逐项如实填写全部必填项，与护照等证件完全一致；漏填必填项时验证会失败并提示。",
+            "验证：填完点表上的「Validate」按钮，表尾会生成带条码的新页面——在线路径保存这份验证后的 PDF 备用，纸质路径打印后把条码页放在材料最上面。",
+            "现在只需下载并熟悉表格；实际是否要交、交到哪里，等下一步系统生成你的个性化清单后再确认。",
+          ],
+          sourceIds: ["imm5257-form", "validate-forms"],
         },
         ...variant.statusProofTasks,
         {
@@ -210,31 +225,66 @@ function buildSteps(variant: IdentityVariant): FlowStep[] {
       slug: "apply",
       title: "进入官方系统并在线填写",
       milestone: "在线填写",
-      summary: "从官方入口进入 IRCC Portal，按个性化清单逐项如实填写。",
-      officialLinkIds: ["ircc-portal-process", "ircc-accounts"],
+      summary:
+        "从官方入口进入，创建账户、回答问卷、拿到你的个性化清单；需要 IMM 5257 的路径按表格要点填写、验证并上传。",
+      officialLinkIds: [
+        "apply",
+        "ircc-portal-process",
+        "ircc-accounts",
+        "imm5257-form",
+      ],
       tasks: [
         {
           id: "official-entry",
-          title: "我从加拿大政府官方入口进入并登录 IRCC Portal",
+          title: "从加拿大政府官方入口进入并创建 / 登录账户",
           kind: "required",
           description:
-            "官方要求。务必从 canada.ca 官方入口进入并登录，避免仿冒站点；可能存在不同账户 / Portal 路径，按官方当前指引选择。本站不读取你的账户。",
-          sourceIds: ["ircc-portal-process", "ircc-accounts", "ircc-portal-login"],
+            "官方要求。务必从 canada.ca 的「How to apply」页进入，避免仿冒站点；展开看两条在线路径的区别与注册要点。本站不读取你的账户。",
+          detailPoints: [
+            "第 1 步：打开下方「访客签证申请步骤」官方页，按页面当前指引选择在线申请入口（入口偶有调整，以官方页面为准）。",
+            "路径 A · IRCC Portal：按页面指引创建 Portal 账号后，直接在系统里逐屏回答申请问题，由系统生成申请——这条路径不需要下载 IMM 5257 PDF。",
+            "路径 B · IRCC secure account（GCKey）：注册或登录 GCKey 账户 → 回答资格问卷 → 系统生成个性化材料清单 → 按清单上传文件（通常含验证过条码的 IMM 5257）。",
+            "注册账户只需邮箱和自设密保；官方系统不会通过邮件向你索要密码。",
+          ],
+          sourceIds: [
+            "apply",
+            "ircc-portal-process",
+            "ircc-accounts",
+            "ircc-portal-login",
+          ],
         },
         {
           id: "visitor-visa",
-          title: "我确认选择的是 visitor visa（访客签证）",
+          title: "确认申请类别选的是 visitor visa（访客签证）",
           kind: "required",
           description:
-            "本站建议。确认申请类别为访客签证（TRV），避免误选其他许可类别。",
+            "本站建议。问卷与申请类别处确认选择访客签证（TRV），避免误选学习 / 工作许可或 eTA 等其他类别。",
         },
         {
           id: "personal-checklist",
-          title: "我已查看系统生成的个性化材料清单",
+          title: "回答问卷，拿到系统生成的个性化材料清单",
           kind: "required",
           description:
-            "官方要求。Portal 会生成个性化文件清单，这是最终材料依据，应以它为准而非任何攻略清单。",
-          sourceIds: ["apply"],
+            "官方要求。个性化清单基于你的问卷回答生成，是你这份申请的最终材料依据；展开看清单怎么用。",
+          detailPoints: [
+            "官方 FAQ：个性化清单适用于 secure account 与纸质申请，由资格问卷的回答生成；Portal 路径则直接在系统内答题。",
+            "以清单为准核对表格与文件（而不是任何攻略清单，包括本站「准备材料」步）；缺什么回上一步补齐。",
+            "清单要求 IMM 5257 时，用「准备材料」步表格任务里的要点填写验证。",
+          ],
+          sourceIds: ["personal-checklist-faq", "apply"],
+        },
+        {
+          id: "upload-imm5257",
+          title: "（GCKey 路径）验证并上传 IMM 5257",
+          kind: "conditional",
+          description:
+            "视情况。个性化清单要求 IMM 5257 时：Adobe 填写 → 点 Validate 出条码页 → 保存后上传到清单对应位置；全部文件传完系统才会出现下一步。",
+          detailPoints: [
+            "官方要求：必填项没填全时 Validate 会失败；补全后再点，直到表尾出现条码页，保存这份验证后的 PDF 再上传。",
+            "第三方经验：上传报错最常见的原因是没点 Validate、或用浏览器 / 系统预览填写；换 Adobe Acrobat Reader 重填并重新验证后再传。",
+            "上传原始验证 PDF 即可，不要打印再扫描。",
+          ],
+          sourceIds: ["imm5257-form", "validate-forms"],
         },
         {
           id: "fill-truthfully",
@@ -504,11 +554,27 @@ export function buildCaTrvFlow(identity: SupportedIdentityCode): FlowConfig {
       slug: "cn-ordinary",
       note: "中国普通护照前往加拿大需贴签访客签证（TRV），而非 eTA。其他国籍是否需要签证或 eTA 不同，请用官方判断工具确认。",
     },
-    lastVerified: "2026-06-25",
+    lastVerified: "2026-07-09",
     officialFee:
       "每人 CAD 100；家庭（5 人及以上同时申请）最高 CAD 500，以提交时 IRCC 费用页为准",
     biometricsFee:
       "每人 CAD 85；家庭（2 人及以上同时申请）最高 CAD 170。14–79 岁通常需采集，以 IRCC 页面为准",
+    feeItems: [
+      {
+        id: "application-fee",
+        label: "签证申请费",
+        amount: 100,
+        currency: "CAD",
+        note: "每人；家庭（5 人及以上同时申请）最高 CAD 500",
+      },
+      {
+        id: "biometrics-fee",
+        label: "生物信息费",
+        amount: 85,
+        currency: "CAD",
+        note: "每人；家庭（2 人及以上）最高 CAD 170；14–79 岁通常需采集，既往采集 10 年内有效者可能免缴",
+      },
+    ],
     etaStages: [
       {
         id: "submit-to-bil",
@@ -596,6 +662,27 @@ export function buildCaTrvFlow(identity: SupportedIdentityCode): FlowConfig {
         organization: IRCC,
         url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/apply-visitor-visa.html",
         lastVerified: "2026-06-25",
+      },
+      {
+        id: "imm5257-form",
+        label: "IMM 5257 主申请表官方下载页（访客签证）",
+        organization: IRCC,
+        url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/application-forms-guides/imm5257.html",
+        lastVerified: "2026-07-09",
+      },
+      {
+        id: "validate-forms",
+        label: "如何填写并验证带条码的申请表（官方 FAQ）",
+        organization: IRCC,
+        url: "https://ircc.canada.ca/english/helpcentre/answer.asp?qnum=1523&top=4",
+        lastVerified: "2026-07-09",
+      },
+      {
+        id: "personal-checklist-faq",
+        label: "什么是个性化材料清单（官方 FAQ）",
+        organization: IRCC,
+        url: "https://ircc.canada.ca/english/helpcentre/answer.asp?qnum=829&top=29",
+        lastVerified: "2026-07-09",
       },
       {
         id: "ircc-portal-process",

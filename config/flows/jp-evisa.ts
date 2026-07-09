@@ -476,6 +476,16 @@ export function buildJpEvisaFlow(identity: SupportedIdentityCode): FlowConfig {
     lastVerified: "2026-07-07",
     officialFee:
       "单次约 15,000 日元（2026-07-01 起上调后的新标准；美国领区纸签费用表为单次 USD 101、多次 USD 201，多次仅纸质路径可申请），以官方费用页与 eVISA 系统显示为准",
+    feeItems: [
+      {
+        id: "evisa-fee",
+        label: "eVISA 签证费（单次观光）",
+        amount: 15000,
+        currency: "JPY",
+        approximate: true,
+        note: "2026-07-01 起上调后的新标准；系统内实际扣款金额以支付页显示为准（走领馆纸质路径时美国领区为单次 USD 101、多次 USD 201）",
+      },
+    ],
     etaStages: [
       {
         id: "review",
