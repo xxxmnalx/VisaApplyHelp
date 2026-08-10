@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { visaapplyPath } from "@/lib/routes";
 
 export const metadata: Metadata = {
   title: "关于本站",
@@ -77,7 +78,7 @@ export default function AboutPage() {
           </section>
         </div>
         <Link
-          href="/start"
+          href={visaapplyPath("/start")}
           className="mt-8 inline-block rounded-lg bg-pine px-5 py-3 font-semibold text-white no-underline transition hover:bg-pine-deep hover:no-underline"
         >
           开始确认身份 →

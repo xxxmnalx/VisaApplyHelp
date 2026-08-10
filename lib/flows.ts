@@ -7,6 +7,7 @@ import type {
   FlowTask,
   OfficialSource,
 } from "@/lib/flow-types";
+import { VISAAPPLY_BASE_PATH } from "@/lib/routes";
 
 const flows: FlowConfig[] = [
   caTrvF1Flow,
@@ -46,7 +47,7 @@ export function listFlowsForStatus(statusCode: string): FlowConfig[] {
 }
 
 export function getFlowPath(flow: FlowConfig): string {
-  return `/apply/${flow.countrySlug}/${flow.visaTypeSlug}/${flow.statusSlug}`;
+  return `${VISAAPPLY_BASE_PATH}/apply/${flow.countrySlug}/${flow.visaTypeSlug}/${flow.statusSlug}`;
 }
 
 export function getStepPath(flow: FlowConfig, stepSlug: string): string {

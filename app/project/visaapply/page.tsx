@@ -3,6 +3,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { averageEtaLabel } from "@/lib/domain/eta";
 import { listFlows } from "@/lib/flows";
+import { visaapplyPath } from "@/lib/routes";
 import type { FlowConfig } from "@/lib/flow-types";
 
 type CountryCard = {
@@ -73,13 +74,13 @@ export default function HomePage() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/start"
+                href={visaapplyPath("/start")}
                 className="rounded-lg bg-pine px-6 py-3.5 text-center font-semibold text-white no-underline transition hover:bg-pine-deep hover:no-underline"
               >
                 确认身份并开始 →
               </Link>
               <Link
-                href="/about"
+                href={visaapplyPath("/about")}
                 className="rounded-lg border border-line bg-white px-6 py-3.5 text-center font-medium text-ink no-underline transition hover:border-node-box hover:no-underline"
               >
                 了解本站怎么运作

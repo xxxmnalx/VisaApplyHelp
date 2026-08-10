@@ -15,6 +15,7 @@ import { VerifiedChip } from "@/components/VerifiedChip";
 import { getIdentityOption } from "@/config/identities";
 import { deadlineDateFrom, todayDateOnly } from "@/lib/domain/eta";
 import { useFlowProgress } from "@/hooks/useFlowProgress";
+import { visaapplyPath } from "@/lib/routes";
 import type { FlowConfig, FlowStep, OfficialSource } from "@/lib/flow-types";
 import {
   getOrganizationShortName,
@@ -53,7 +54,7 @@ export function FlowRunner({
   } = useFlowProgress(flow, step.id);
 
   useEffect(() => {
-    if (isLoaded && !isIdentityValid) router.replace("/start");
+    if (isLoaded && !isIdentityValid) router.replace(visaapplyPath("/start"));
   }, [isIdentityValid, isLoaded, router]);
 
   const currentIndex = flow.steps.findIndex(
@@ -118,7 +119,7 @@ export function FlowRunner({
       <header className="border-b border-line-soft bg-white">
         <div className="flex items-center gap-2 px-4 py-3 sm:hidden">
           <Link
-            href="/start"
+            href={visaapplyPath("/start")}
             aria-label="返回身份与国家选择"
             className="-ml-1 px-1 py-1 text-base leading-none text-ink-mute no-underline hover:text-ink hover:no-underline"
           >
@@ -133,7 +134,7 @@ export function FlowRunner({
         </div>
         <div className="mx-auto hidden max-w-5xl items-center gap-3 px-6 py-3.5 sm:flex">
           <Link
-            href="/"
+            href={visaapplyPath()}
             className="flex items-center gap-2 text-sm font-bold text-ink no-underline hover:no-underline"
           >
             <BrandMark size={18} />
@@ -143,7 +144,7 @@ export function FlowRunner({
             /
           </span>
           <Link
-            href="/start"
+            href={visaapplyPath("/start")}
             className="text-[13.5px] text-ink-soft no-underline hover:text-ink hover:no-underline"
           >
             {flow.countryFlag} {flow.countryName} · {flow.visaType}
@@ -359,7 +360,7 @@ export function FlowRunner({
               </Link>
             ) : (
               <Link
-                href="/start"
+                href={visaapplyPath("/start")}
                 className="rounded-lg border border-line bg-white px-4 py-3 text-center text-[13px] font-medium text-ink no-underline transition hover:border-node-box hover:no-underline"
               >
                 ← 重选国家
@@ -374,7 +375,7 @@ export function FlowRunner({
               </Link>
             ) : (
               <Link
-                href="/"
+                href={visaapplyPath()}
                 className="rounded-lg border border-pine bg-white px-4 py-3 text-center text-[13px] font-semibold text-pine no-underline transition hover:bg-pine-tint hover:no-underline"
               >
                 完成流程 →
