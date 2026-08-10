@@ -3,6 +3,16 @@
 > 所有 AI、自动化工具和新聊天线程在修改源码前必须先阅读本文件。  
 > 新记录按时间倒序添加，时间使用项目本地时区并包含时区缩写。
 
+## 2026-08-09 21:51:09 PDT
+
+### 修改范围（修复 main 合并残留导致的构建失败）
+
+- `next.config.mjs`：合并 `feature/personal-home-visaapply-path` 时冲突解决残留了一对多余的 `];` `},`，文件语法错误（`Unexpected token ']'`），Vercel 构建失败、线上停在旧部署。删除残留两行，`/game` rewrites（28207d2）与签证助手 redirects 同时保留。
+
+### 验证
+
+- `node import()` 配置解析通过；`npm run build` 通过（53 静态页）。
+
 ## 2026-08-09 19:36:46 PDT
 
 ### 修改范围（域名结构调整：根路径改个人主页，签证助手迁至 /project/visaapply）
