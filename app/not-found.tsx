@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { visaapplyPath } from "@/lib/routes";
 
 export default function NotFoundPage() {
   return (
@@ -15,11 +16,16 @@ export default function NotFoundPage() {
           页面可能已调整，或这条身份流程尚未开放。
         </p>
         <Link
-          href="/start"
+          href={visaapplyPath("/start")}
           className="mt-8 inline-block rounded-lg bg-pine px-5 py-3 font-semibold text-white no-underline transition hover:bg-pine-deep hover:no-underline"
         >
           返回开始页 →
         </Link>
+        <p className="mt-4 text-sm">
+          <Link href="/" className="text-ink-soft underline hover:text-ink">
+            回到个人主页
+          </Link>
+        </p>
       </main>
       <SiteFooter />
     </>

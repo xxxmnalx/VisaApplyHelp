@@ -3,6 +3,29 @@
 > 所有 AI、自动化工具和新聊天线程在修改源码前必须先阅读本文件。  
 > 新记录按时间倒序添加，时间使用项目本地时区并包含时区缩写。
 
+## 2026-08-09 19:36:46 PDT
+
+### 修改范围（域名结构调整：根路径改个人主页，签证助手迁至 /project/visaapply）
+
+- **路由整体迁移**：`app/start`、`app/apply`、`app/about`、`app/privacy` 与原首页 `app/page.tsx` 全部移入 `app/project/visaapply/` 下；新增段级布局 `app/project/visaapply/layout.tsx` 承载原站点级 metadata（默认标题、`%s｜签证步骤助手` 模板、OG 信息）。
+- **新增前缀单点定义** `lib/routes.ts`（`VISAAPPLY_BASE_PATH = "/project/visaapply"` + `visaapplyPath()`）；`getFlowPath` 自动带前缀，`CountrySelector` 等经注册表生成的链接零改动；`SiteHeader` / `SiteFooter` / `FlowRunner`（含身份失效 `router.replace`）/ 关于页 / 404 页的硬编码链接全部改经 `visaapplyPath()`。
+- **根路径新个人主页** `app/page.tsx`：Leyang Cheng 简介 + GitHub 链接 + 「项目」卡片（覆盖国家数、适用身份、最近核验日期由 `listFlows()` 实时计算），点击进入 `/project/visaapply`；根布局 metadata 改为个人主页口径。
+- **旧路径重定向**集中到 `next.config.mjs`（均 `permanent: false`）：`/start`、`/apply/:path*`、`/about`、`/privacy` 转到对应新位置；更早版本遗留的 `/ca(/:path*)`、`/jp`、`/kr`、`/countries` 页面级 redirect 组件删除，改为同处配置转到新 start 页。
+- **域名兜底值**：`layout.tsx` / `sitemap.ts` / `robots.ts` 的 `NEXT_PUBLIC_SITE_URL` 回退值由 `visa-apply-help.vercel.app` 改为 `https://www.xxxmnalx.com`（当前线上即该域名）；sitemap 静态页更新为根主页 + visaapply 四个静态页。
+- `SiteFooter` 增「个人主页」链接、404 页增「回到个人主页」次级链接；`docs/PROJECT_CORE.md` §8 路由原则同步新前缀与「前缀单点定义、不散写字面量」规则；新增 `.claude/launch.json`（dev server 走查配置）。
+
+### 关键决定
+
+- 采用**单仓库单应用**方案：域名已绑定本项目（xxxmnalx.com → www 主站即本站），在 `app/` 内用真实目录承载 `/project/visaapply` 前缀、根路由做个人主页，无需新建 Vercel 项目、multi-zone rewrite 或 DNS 变更；`/project/` 前缀为未来更多项目预留。
+- 旧路径重定向选 `permanent: false`（307）：保留未来把 `/about` 等根路径挪作个人主页用途的余地，避免浏览器对 308 的强缓存；SEO 影响对本站量级可接受。
+- localStorage 进度按 origin 存储，路径迁移不影响既有用户进度与身份记录（走查已确认预置身份在新路径可直接续用）。
+- 个人主页简介文案为最小占位（一句话 + GitHub），具体个人内容留给用户自行补充；不在页面公开邮箱。
+
+### 验证
+
+- `npx tsc --noEmit`、`npm run lint`、`npm run build` 全部通过（需先清理旧 `.next/types` 缓存）；静态页 56 → 53（42 个流程页保留，删除 5 个旧重定向页，新增根主页与段级布局）。
+- 375×812 走查（dev server）：根主页渲染正常并链接 `/project/visaapply`；visaapply 首页 CTA 与页脚链接全部带新前缀；`/start` 307 → 新 start 页（标题模板生效）；旧 `/apply/ca/visitor/f1/prepare` 307 → 新步骤页，无身份时正确弹回新 start 页；预置 F1 身份后步骤页正常渲染（里程碑条、Checklist、页内链接全部新前缀）；`scrollWidth = 375` 无横向溢出；控制台零错误。
+
 ## 2026-07-09 16:46:33 PDT
 
 ### 修改范围（第三方来源展示策略：正文统一定性 + 关于页集中引流）
