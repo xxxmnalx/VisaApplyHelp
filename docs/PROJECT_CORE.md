@@ -197,11 +197,13 @@ localStorage（0.1） / 服务端数据库（未来）
 
 ## 8. 路由原则
 
-流程页面统一使用：
+签证助手整体挂在 `/project/visaapply` 前缀下（2026-08 起，域名根路径 `/` 留给个人主页）；流程页面统一使用：
 
 ```text
-/apply/[country]/[visaType]/[status]/[step]
+/project/visaapply/apply/[country]/[visaType]/[status]/[step]
 ```
+
+前缀由 `lib/routes.ts` 的 `VISAAPPLY_BASE_PATH` 单点定义，站内链接一律经 `visaapplyPath()` 或流程注册表的路径函数生成，不得散写字面量。
 
 路由参数必须能从流程注册表解析为唯一 FlowConfig。不得为每个身份复制一套页面。
 
