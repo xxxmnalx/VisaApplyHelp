@@ -28,8 +28,6 @@ const nextConfig = {
       { source: "/kr", destination: "/project/visaapply/start", permanent: false },
     ];
   },
-    ];
-  },
 };
 
 export default withMDX(nextConfig);
