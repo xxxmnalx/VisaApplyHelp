@@ -73,6 +73,19 @@ export default function HomePage() {
                 进入项目 →
               </p>
             </Link>
+            {/* 骰迹为独立部署的静态原型（经 /game 反向代理），用 <a> 走整页跳转 */}
+            <a
+              href="/game/demo"
+              className="block rounded-xl border border-line bg-white p-5 no-underline shadow-card transition hover:border-node-box hover:no-underline"
+            >
+              <h3 className="font-semibold text-ink">骰迹 · 玩法测试原型</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                桌面骰子玩法的测试原型，可直接在浏览器里试玩，持续迭代中。
+              </p>
+              <p className="mt-3 text-sm font-semibold text-pine">
+                进入项目 →
+              </p>
+            </a>
           </div>
         </section>
       </main>
