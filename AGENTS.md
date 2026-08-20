@@ -40,6 +40,15 @@
 - 部署到 Vercel
 - 暂不上数据库；结构化流程使用本地类型化配置
 
+## 与域名的关系
+
+本仓库只是一个项目，不管域名。`xxxmnalx.com` 由私有仓库 `xxxmnalx-com`（域名壳）统一管理：
+它渲染域名根路径的个人主页，并把 `/project/visaapply/*` 反代到本应用的独立部署
+（上游 `visaapply.xxxmnalx.com`）。
+
+本应用因此设了 `basePath: "/project/visaapply"`，路由与 `/_next/*` 静态资源都带前缀。
+详见 `docs/PROJECT_CORE.md` §8。
+
 ## 产品与数据结构
 
 - 流程、步骤、Checklist、官方链接和时间线节点使用类型化配置。
@@ -77,6 +86,10 @@
 - 不要把多个文件的改动塞进一个 commit；确实耦合时除外。
 - 不要收集或存储用户的敏感签证申请信息。
 - 不要把本站流程完成度描述为官方审理进度。
+- 不要在本仓库配置域名级重定向、其他项目的反代或根 `robots.txt`——这些归域名壳 `xxxmnalx-com`。
+  写在这里的 `redirects` `source` 会被 `basePath` 自动加上前缀，只会形成死循环。
+- 不要改动 `next.config.mjs` 的 `basePath`：它必须与域名壳 `config/zones.mjs` 里的路径完全一致，
+  改一边会让静态资源全部 404。
 
 ## Git 习惯
 

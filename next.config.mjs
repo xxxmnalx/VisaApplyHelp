@@ -2,32 +2,19 @@ import createMDX from "@next/mdx";
 
 const withMDX = createMDX({});
 
-/** @type {import('next').NextConfig} */
+/**
+ * 本应用是 xxxmnalx.com 下的一个 zone，整体挂在 /project/visaapply 前缀。
+ * basePath 会把前缀注入到路由与 /_next/* 静态资源上——域名壳按同样的前缀反代，
+ * 少了它静态资源会打回壳并 404。
+ *
+ * 域名级的重定向（/start、/apply/* 等旧路径）与其他项目的反代都归壳，
+ * 不在这里配置：这里的 source 会被 basePath 自动加上前缀，写在这里只会形成死循环。
+ *
+ * @type {import('next').NextConfig}
+ */
 const nextConfig = {
+  basePath: "/project/visaapply",
   pageExtensions: ["ts", "tsx", "mdx"],
-  async rewrites() {
-    return [
-      // 骰迹玩法测试原型,独立部署在 rapid-demo-testing 项目
-      { source: "/game/demo", destination: "https://rapid-demo-testing.vercel.app/index.html" },
-      // 兜底:demo 页面内的相对路径资源(style.css / app.js)会解析到 /game/ 下
-      { source: "/game/:path*", destination: "https://rapid-demo-testing.vercel.app/:path*" },
-    ];
-  },
-  async redirects() {
-    // 签证助手 2026-08 起整体迁至 /project/visaapply，根路径改为个人主页；
-    // 旧书签与外链统一转到新位置（含更早版本遗留的 /ca /jp /kr /countries 入口）。
-    return [
-      { source: "/start", destination: "/project/visaapply/start", permanent: false },
-      { source: "/apply/:path*", destination: "/project/visaapply/apply/:path*", permanent: false },
-      { source: "/about", destination: "/project/visaapply/about", permanent: false },
-      { source: "/privacy", destination: "/project/visaapply/privacy", permanent: false },
-      { source: "/countries", destination: "/project/visaapply/start", permanent: false },
-      { source: "/ca", destination: "/project/visaapply/start", permanent: false },
-      { source: "/ca/:path*", destination: "/project/visaapply/start", permanent: false },
-      { source: "/jp", destination: "/project/visaapply/start", permanent: false },
-      { source: "/kr", destination: "/project/visaapply/start", permanent: false },
-    ];
-  },
 };
 
 export default withMDX(nextConfig);

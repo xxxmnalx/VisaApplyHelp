@@ -28,9 +28,11 @@ export function SiteFooter() {
           >
             开始申请
           </Link>
-          <Link href="/" className="underline hover:text-ink">
+          {/* 个人主页由域名壳承载，不在本应用内：用 <a> 整页跳转，
+              避免 next/link 被 basePath 加上 /project/visaapply 前缀。 */}
+          <a href="/" className="underline hover:text-ink">
             个人主页
-          </Link>
+          </a>
         </div>
       </div>
     </footer>

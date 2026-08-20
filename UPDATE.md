@@ -3,6 +3,57 @@
 > 所有 AI、自动化工具和新聊天线程在修改源码前必须先阅读本文件。  
 > 新记录按时间倒序添加，时间使用项目本地时区并包含时区缩写。
 
+## 2026-08-20 02:00:40 PDT
+
+### 修改范围（域名分离：本站降级为 zone，改用 basePath）
+
+- **域名职责整体迁出**：`xxxmnalx.com` 改由新建的私有仓库 `xxxmnalx-com`（域名壳）管理。
+  本仓库不再承担根主页、域名级重定向与其他项目的反代，回归「一个项目」的定位。
+- **改用 basePath**：`app/project/visaapply/*` 全部移回 `app/*`，改由 `next.config.mjs` 的
+  `basePath: "/project/visaapply"` 注入前缀；段级布局 `app/project/visaapply/layout.tsx` 删除，
+  其 metadata 合并回 `app/layout.tsx`。壳按同样前缀反代，`/_next/*` 静态资源随之带前缀。
+- **迁出的文件**：`app/page.tsx`（个人主页）、`app/robots.ts`（根域只能有一份，归壳）、
+  `next.config.mjs` 的 `redirects`（旧路径 307）与 `/game` `rewrites`（骰迹反代），全部移入壳仓库。
+- **`lib/routes.ts` 重写**：`VISAAPPLY_BASE_PATH` 固定为空字符串（前缀已由 basePath 注入，
+  应用内不能再带一遍），保留常量作为单点改写入口；新增 `VISAAPPLY_PUBLIC_PREFIX`、
+  `SITE_ORIGIN` 与 `visaapplyUrl()`，供 sitemap / metadata 拼对外绝对 URL。
+  `visaapplyPath()` 的默认参数由 `""` 改为 `"/"`，避免返回空 href。
+- **`app/sitemap.ts`**：改经 `visaapplyUrl()` 生成，只出本 zone 的页面（根主页归壳的 sitemap）。
+- **跨 zone 链接**：`components/SiteFooter.tsx` 与 `app/not-found.tsx` 的「个人主页」由
+  `next/link` 改为 `<a>` 整页跳转——目标在壳里，`next/link` 会被 basePath 加上前缀而指错位置。
+- **文档**：`AGENTS.md` 新增「与域名的关系」段与两条禁令；`docs/PROJECT_CORE.md` §8 重写路由原则，
+  写明 basePath 机制与「对外绝对 URL」「跨出本应用的链接」两类例外。
+
+### 关键决定
+
+- **反代而非子域**：`visaapply.xxxmnalx.com` 只作为壳的反代上游，不对外宣传。
+  用户始终停在 `www.xxxmnalx.com` 这一个 origin 上——localStorage 进度按 origin 存储，
+  改让用户直接访问子域会清空所有老用户的进度。
+- **basePath 不能省**：这是 multi-zone 唯一容易漏的点。少了它，`/_next/static/*`
+  会被请求到壳的根路径并 404，页面裸奔。
+- **域名级重定向不留在本仓库**：这里的 `redirects.source` 会被 basePath 自动加上前缀，
+  `/start` 会变成 `/project/visaapply/start`，形成自我循环。
+
+### 验证
+
+- `npx tsc --noEmit`、`npm run lint`、`npm run build` 全部通过（先清了 `.next` 与 tsbuildinfo）。
+  静态页 53 → 51（减去个人主页与 robots，42 个流程页与 4 个静态页保留）。
+- 构建产物核对：`sitemap.xml` 的 `<loc>` 全部为
+  `https://www.xxxmnalx.com/project/visaapply/...`，前缀正确（basePath 不作用于绝对 URL，
+  此处依赖 `visaapplyUrl()`）。
+- 本地端到端联调（壳 :3100 反代到本应用 :3000）：`/project/visaapply` 及其
+  `/_next/static/*` 全部 200；页内链接自动带前缀；无身份时 `router.replace` 正确弹回
+  `/project/visaapply/start`；页脚「个人主页」跳到壳根路径；旧路径 `/start` `/apply/*`
+  `/about` `/privacy` `/ca` `/jp` `/kr` `/countries` 全部 307 到新位置；
+  反代后的 `/project/visaapply/sitemap.xml` 200。
+- 375×812 走查：`scrollWidth = 375` 无横向溢出，控制台零错误。
+
+### 未完成 / 注意
+
+- 本轮改动在 `feature/multizone-basepath` 分支，**未提交、未合并**。
+  合并到 `main` 会立刻让 `xxxmnalx.com` 的根路径失去个人主页——
+  必须等域名切绑到壳之后才能合，顺序见壳仓库 `docs/DOMAIN.md` §7。
+
 ## 2026-08-09 21:56:23 PDT
 
 ### 修改范围（个人主页新增骰迹项目卡片）

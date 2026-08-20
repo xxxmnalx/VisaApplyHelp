@@ -197,13 +197,20 @@ localStorage（0.1） / 服务端数据库（未来）
 
 ## 8. 路由原则
 
-签证助手整体挂在 `/project/visaapply` 前缀下（2026-08 起，域名根路径 `/` 留给个人主页）；流程页面统一使用：
+本应用是 `xxxmnalx.com` 下的一个 zone，整体挂在 `/project/visaapply` 前缀下（2026-08 起，域名根路径 `/` 留给个人主页，由私有的 `xxxmnalx-com` 域名壳仓库承载并反代到本应用的独立部署）。流程页面对外统一使用：
 
 ```text
 /project/visaapply/apply/[country]/[visaType]/[status]/[step]
 ```
 
-前缀由 `lib/routes.ts` 的 `VISAAPPLY_BASE_PATH` 单点定义，站内链接一律经 `visaapplyPath()` 或流程注册表的路径函数生成，不得散写字面量。
+前缀由 `next.config.mjs` 的 `basePath` 注入到路由、`next/link` 与 `/_next/*` 静态资源上，应用内不再自己带一遍——`lib/routes.ts` 的 `VISAAPPLY_BASE_PATH` 因此固定为空字符串，但保留为单点改写入口。站内链接一律经 `visaapplyPath()` 或流程注册表的路径函数生成，不得散写字面量。
+
+两类例外必须显式处理：
+
+- **对外绝对 URL**（sitemap、metadata）：`basePath` 不作用于自己拼的绝对 URL，一律经 `visaapplyUrl()` 生成，它会补上 `VISAAPPLY_PUBLIC_PREFIX`。
+- **跨出本应用的链接**（如页脚的「个人主页」）：目标在域名壳里，必须用 `<a>` 整页跳转；用 `next/link` 会被 `basePath` 加上前缀而指向错误位置。
+
+域名级的重定向与其他项目的反代都归域名壳，不在本仓库配置：这里的 `source` 会被 `basePath` 自动加上前缀，写在这里只会形成死循环。
 
 路由参数必须能从流程注册表解析为唯一 FlowConfig。不得为每个身份复制一套页面。
 

@@ -22,9 +22,10 @@ export default function NotFoundPage() {
           返回开始页 →
         </Link>
         <p className="mt-4 text-sm">
-          <Link href="/" className="text-ink-soft underline hover:text-ink">
+          {/* 同 SiteFooter：跨出本应用的链接一律用 <a>。 */}
+          <a href="/" className="text-ink-soft underline hover:text-ink">
             回到个人主页
-          </Link>
+          </a>
         </p>
       </main>
       <SiteFooter />
